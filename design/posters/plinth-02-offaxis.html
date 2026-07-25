@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PLINTH-002 — Off-axis markdown poster (A1)</title>
+<style>
+  /* ==========================================================
+     PLINTH-002 · Off-axis · A1 portrait markdown poster
+     Trim 594 × 841 mm · 3 mm bleed · 20 mm type safety
+     ========================================================== */
+
+  /* ---- LIGHT RIG -------------------------------------------
+     Everything about the key light lives here. Retune these
+     against the lighting references and nothing else moves.
+     ---------------------------------------------------------- */
+  :root {
+    --key-x: 72%;          /* horizontal centre of the beam        */
+    --key-warmth: 252, 246, 233;  /* tungsten white, rgb           */
+    --beam-top: 0.15;      /* opacity where the beam enters frame  */
+    --beam-mid: 0.03;      /* opacity at the falloff shoulder      */
+    --beam-width: 44%;     /* width of the cone at the floor       */
+    --beam-throat: 7%;    /* width of the cone at the top edge    */
+    --beam-height: 72%;    /* how far down the visible cone reaches*/
+    --beam-blur: 26px;      /* haze softness on the cone edge       */
+    --pool: 0.22;          /* brightness of the floor pool         */
+    --shadow-density: 0.92;/* darkness of the contact shadow       */
+    --grain: 0.28;         /* film grain over the whole frame      */
+
+    /* ---- STAGE ---- */
+    --void-top: #08090b;
+    --void-bottom: #131417;
+    --stone-lit: #cdc7bb;
+    --stone-mid: #918c83;
+    --stone-shade: #55524c;
+    --stone-edge: #35332f;
+    --stone-base: #201f1d;
+
+    /* ---- TYPE ---- */
+    --ink: #f3f0e9;
+    --ink-dim: rgba(243, 240, 233, 0.62);
+    --display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+    /* ---- SHEET ---- */
+    --trim-w: 594mm;
+    --trim-h: 841mm;
+    --bleed: 3mm;
+    --safety: 20mm;
+    --fit: 1;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { background: #1a1b1e; }
+
+  body {
+    margin: 0;
+    font-family: var(--display);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- screen chrome (never prints) ---------- */
+
+  .chrome {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    background: #101113;
+    border-bottom: 1px solid #2a2c30;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+  }
+
+  .chrome-id {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #8a8781;
+    margin-right: auto;
+  }
+
+  .chrome-id b { color: #e3b273; font-weight: 400; }
+
+  .chrome button {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: #e6e3dd;
+    background: transparent;
+    border: 1px solid #2a2c30;
+    padding: 8px 13px;
+    cursor: pointer;
+  }
+
+  .chrome button:hover { border-color: #e3b273; color: #e3b273; }
+  .chrome button:focus-visible { outline: 2px solid #e3b273; outline-offset: 2px; }
+  .chrome button[aria-pressed="true"] { border-color: #e3b273; color: #e3b273; background: rgba(227, 178, 115, 0.13); }
+
+  .viewport {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 28px 0 40px;
+    overflow: hidden;
+  }
+
+  .scaler {
+    transform: scale(var(--fit));
+    transform-origin: top center;
+  }
+
+  /* ---------- the sheet ---------- */
+
+  .sheet {
+    position: relative;
+    width: calc(var(--trim-w) + var(--bleed) * 2);
+    height: calc(var(--trim-h) + var(--bleed) * 2);
+    overflow: hidden;
+    isolation: isolate;
+    background:
+      linear-gradient(to bottom, var(--void-top) 0%, var(--void-top) 46%, var(--void-bottom) 100%);
+  }
+
+  /* ---------- the set ---------- */
+
+  .beam {
+    position: absolute;
+    top: -1%;
+    left: var(--key-x);
+    width: var(--beam-width);
+    height: var(--beam-height);
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to bottom,
+      rgba(var(--key-warmth), var(--beam-top)),
+      rgba(var(--key-warmth), var(--beam-mid)) 74%,
+      rgba(var(--key-warmth), 0) 100%
+    );
+    clip-path: polygon(
+      calc(50% - var(--beam-throat) / 2) 0,
+      calc(50% + var(--beam-throat) / 2) 0,
+      92% 100%,
+      8% 100%
+    );
+    filter: blur(var(--beam-blur));
+    mask-image: linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  }
+
+  .pool {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 30%;
+    background: radial-gradient(
+      95% 150% at var(--key-x) 118%,
+      rgba(var(--key-warmth), var(--pool)),
+      rgba(var(--key-warmth), 0) 62%
+    );
+  }
+
+  .shadow {
+    position: absolute;
+    left: var(--key-x);
+    bottom: 20%;
+    width: 33%;
+    height: 4.4%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      rgba(0, 0, 0, var(--shadow-density)),
+      rgba(0, 0, 0, calc(var(--shadow-density) * 0.6)) 58%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
+
+  .slab {
+    position: absolute;
+    left: var(--key-x);
+    bottom: 29%;
+    width: 39%;
+    height: 7.6%;
+    transform: translateX(-50%);
+  }
+
+  .slab .edge {
+    position: absolute;
+    inset: 22% 0 0 0;
+    background: linear-gradient(to bottom, #46433d, var(--stone-edge) 52%, var(--stone-base));
+    border-radius: 0 0 50% 50% / 0 0 62% 62%;
+    box-shadow:
+      inset 0 3mm 5mm rgba(0, 0, 0, 0.62),
+      inset 0 -6mm 9mm rgba(0, 0, 0, 0.5);
+  }
+
+  .slab .top {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 34%;
+    border-radius: 50%;
+    background: radial-gradient(58% 110% at 44% 30%, var(--stone-lit), var(--stone-mid) 52%, #6b675f 82%, #4c4944 100%);
+    box-shadow:
+      0 0 16px rgba(var(--key-warmth), 0.10),
+      inset 0 -1.4mm 2.4mm rgba(0, 0, 0, 0.42);
+  }
+
+  .grain {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: var(--grain);
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    background-size: 40mm 40mm;
+  }
+
+  body.no-grain .grain { display: none; }
+
+  /* ---------- copy ---------- */
+
+  .copy {
+    position: absolute;
+    inset: var(--bleed);
+    z-index: 3;
+    padding: var(--safety);
+    display: flex;
+    flex-direction: column;
+    color: var(--ink);
+  }
+
+  .spacer { flex: 1; }
+
+  .eyebrow {
+    font-size: 9mm;
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+  }
+
+  .block {
+    display: flex;
+    flex-direction: column;
+    gap: 6mm;
+    max-width: 52%;
+  }
+
+  .headline {
+    font-size: 46mm;
+    line-height: 0.92;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .descriptor {
+    font-family: var(--serif);
+    font-size: 12mm;
+    line-height: 1.34;
+    color: var(--ink-dim);
+    max-width: 22ch;
+  }
+
+  .pricing {
+    display: flex;
+    align-items: baseline;
+    gap: 9mm;
+    margin-top: 4mm;
+  }
+
+  .now {
+    font-family: var(--mono);
+    font-size: 76mm;
+    line-height: 0.84;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.05em;
+  }
+
+  .now .cur {
+    font-size: 0.42em;
+    vertical-align: 0.62em;
+    letter-spacing: 0;
+    margin-right: 0.06em;
+  }
+
+  .was {
+    font-family: var(--mono);
+    font-size: 16mm;
+    line-height: 1;
+    color: var(--ink-dim);
+    font-variant-numeric: tabular-nums;
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .was::after {
+    content: "";
+    position: absolute;
+    left: -1mm;
+    right: -1mm;
+    top: 52%;
+    height: 1.4mm;
+    background: currentColor;
+    transform: rotate(-4deg);
+  }
+
+  .save {
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 11mm;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1.2mm solid currentColor;
+    padding: 5mm 7mm;
+    margin-top: 2mm;
+  }
+
+  .fineprint {
+    margin-top: 14mm;
+    padding-top: 5mm;
+    border-top: 0.6mm solid var(--ink-dim);
+    display: flex;
+    justify-content: space-between;
+    gap: 10mm;
+    font-family: var(--mono);
+    font-size: 7mm;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  /* open fields awaiting final copy */
+  .ph {
+    display: inline-block;
+    min-width: 2ch;
+    outline: none;
+    border-bottom: 0.8mm dashed rgba(227, 178, 115, 0.6);
+  }
+
+  .ph:empty::before { content: attr(data-ph); color: rgba(227, 178, 115, 0.9); }
+  .ph:focus { background: rgba(227, 178, 115, 0.16); }
+  body.clean .ph { border-bottom-color: transparent; }
+  body.clean .ph:empty::before { color: inherit; opacity: 0.35; }
+
+  /* ---------- print guides ---------- */
+
+  .guides {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    display: none;
+  }
+
+  body.guides .guides { display: block; }
+
+  .guides .bleedline,
+  .guides .safeline {
+    position: absolute;
+    border: 0.5mm dashed;
+  }
+
+  .guides .bleedline {
+    inset: var(--bleed);
+    border-color: rgba(227, 178, 115, 0.85);
+  }
+
+  .guides .safeline {
+    inset: calc(var(--bleed) + var(--safety));
+    border-color: rgba(120, 190, 220, 0.6);
+  }
+
+  .guides .tag {
+    position: absolute;
+    font-family: var(--mono);
+    font-size: 4mm;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .guides .tag.trim { top: 5mm; left: 5mm; color: rgba(227, 178, 115, 0.85); }
+  .guides .tag.safe { top: 25mm; left: 25mm; color: rgba(120, 190, 220, 0.75); }
+
+  /* ---------- print ---------- */
+
+  @page {
+    size: 600mm 847mm;
+    margin: 0;
+  }
+
+  @media print {
+    html, body { background: #fff; }
+    .chrome, .guides { display: none !important; }
+    .viewport { padding: 0; overflow: visible; }
+    .scaler { transform: none; }
+    .sheet { break-inside: avoid; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <span class="chrome-id">PLINTH-002 · Off-axis · A1 594×841 + 3mm bleed · <b>$64.00 → $14.99</b></span>
+  <button type="button" id="btn-guides" aria-pressed="false">Print guides</button>
+  <button type="button" id="btn-clean" aria-pressed="false">Hide field markers</button>
+  <button type="button" id="btn-grain" aria-pressed="true">Grain: on</button>
+  <button type="button" id="btn-print">Print / PDF</button>
+</div>
+
+<div class="viewport">
+  <div class="scaler">
+    <div class="sheet">
+
+      <div class="beam"></div>
+      <div class="pool"></div>
+      <div class="shadow"></div>
+      <div class="slab">
+        <div class="edge"></div>
+        <div class="top"></div>
+      </div>
+      <div class="grain"></div>
+
+      <div class="copy">
+        <div class="eyebrow ph" contenteditable="true" data-ph="Brand / department"></div>
+
+        <div class="spacer"></div>
+
+        <div class="block">
+          <div class="headline ph" contenteditable="true" data-ph="Product name"></div>
+          <div class="descriptor ph" contenteditable="true" data-ph="One line of product copy"></div>
+
+          <div class="pricing">
+            <div class="now"><span class="cur">$</span>14.99</div>
+            <div class="was">Was $64.00</div>
+          </div>
+
+          <div class="save">Save $49.01</div>
+        </div>
+
+        <div class="fineprint">
+          <span class="ph" contenteditable="true" data-ph="SKU 000000"></span>
+          <span class="ph" contenteditable="true" data-ph="Offer ends 00.00.00"></span>
+        </div>
+      </div>
+
+      <div class="guides">
+        <div class="bleedline"></div>
+        <div class="safeline"></div>
+        <span class="tag trim">Trim 594 × 841</span>
+        <span class="tag safe">Type safety 20mm</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var body = document.body;
+    var scaler = document.querySelector('.scaler');
+    var sheet = document.querySelector('.sheet');
+
+    function fit() {
+      var available = window.innerWidth - 64;
+      var natural = sheet.offsetWidth;
+      var scale = Math.min(1, available / natural);
+      document.documentElement.style.setProperty('--fit', scale);
+      scaler.style.height = (sheet.offsetHeight * scale) + 'px';
+    }
+
+    fit();
+    window.addEventListener('resize', fit);
+
+    function toggle(id, cls, label) {
+      var btn = document.getElementById(id);
+      btn.addEventListener('click', function () {
+        var on = body.classList.toggle(cls);
+        btn.setAttribute('aria-pressed', String(label ? !on : on));
+        if (label) { btn.textContent = on ? label[1] : label[0]; }
+      });
+    }
+
+    toggle('btn-guides', 'guides');
+    toggle('btn-clean', 'clean');
+    toggle('btn-grain', 'no-grain', ['Grain: on', 'Grain: off']);
+
+    document.getElementById('btn-print').addEventListener('click', function () {
+      window.print();
+    });
+
+    document.querySelectorAll('.ph').forEach(function (el) {
+      el.addEventListener('paste', function (e) {
+        e.preventDefault();
+        var text = (e.clipboardData || window.clipboardData).getData('text');
+        document.execCommand('insertText', false, text.replace(/\s+/g, ' '));
+      });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); el.blur(); }
+      });
+    });
+  })();
+</script>
+</body>
+</html>
