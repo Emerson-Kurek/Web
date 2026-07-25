@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Five staging directions for the levitating stone plinth poster, with editable in-store sales fields.">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body, h1, h2, h3, p, dl, dd, ul, figure { margin: 0; }
+  ul { padding: 0; }
+  img, svg { display: block; max-width: 100%; }
+  button, input { font: inherit; color: inherit; }
+</style>
+<title>Levitating Stone Podium — Five Directions</title>
+</head>
+<body>
+<style>
+  :root {
+    --ground: #0b0c0e;
+    --panel: #141518;
+    --panel-2: #191a1e;
+    --rule: #272a2f;
+    --text: #e6e3dd;
+    --muted: #8a8781;
+    --stone: #b6b0a5;
+    --key: #e3b273;
+    --key-soft: rgba(227, 178, 115, 0.14);
+
+    --display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+    --shell: 1180px;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --ground: #ece9e2;
+      --panel: #f7f5f1;
+      --panel-2: #fffefb;
+      --rule: #d5cfc4;
+      --text: #16171a;
+      --muted: #6f6a61;
+      --key: #8a5a1f;
+      --key-soft: rgba(138, 90, 31, 0.11);
+    }
+  }
+
+  :root[data-theme="light"] {
+    --ground: #ece9e2;
+    --panel: #f7f5f1;
+    --panel-2: #fffefb;
+    --rule: #d5cfc4;
+    --text: #16171a;
+    --muted: #6f6a61;
+    --key: #8a5a1f;
+    --key-soft: rgba(138, 90, 31, 0.11);
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #0b0c0e;
+    --panel: #141518;
+    --panel-2: #191a1e;
+    --rule: #272a2f;
+    --text: #e6e3dd;
+    --muted: #8a8781;
+    --key: #e3b273;
+    --key-soft: rgba(227, 178, 115, 0.14);
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--text);
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 88px;
+  }
+
+  .shell {
+    max-width: var(--shell);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    border-bottom: 1px solid var(--rule);
+    padding: 44px 0 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--key);
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+    font-size: clamp(38px, 7vw, 76px);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--muted);
+  }
+
+  .standfirst {
+    max-width: 62ch;
+    color: var(--muted);
+    font-size: 17px;
+  }
+
+  .jobmeta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+
+  .jobmeta div {
+    background: var(--panel);
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .jobmeta dt {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .jobmeta dd {
+    font-family: var(--mono);
+    font-size: 13px;
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  button {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--rule);
+    padding: 9px 14px;
+    cursor: pointer;
+  }
+
+  button:hover { border-color: var(--key); color: var(--key); }
+  button:focus-visible { outline: 2px solid var(--key); outline-offset: 2px; }
+  button[aria-pressed="true"] { border-color: var(--key); color: var(--key); background: var(--key-soft); }
+
+  .hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ---------- direction rows ---------- */
+
+  .directions {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .direction {
+    border-bottom: 1px solid var(--rule);
+    padding: 40px 0;
+    display: grid;
+    grid-template-columns: minmax(240px, 340px) 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .direction.wide { grid-template-columns: 1fr; }
+
+  .direction.selected .idx { color: var(--key); }
+
+  .stage {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .stage-note {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .notes {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .head {
+    display: flex;
+    gap: 16px;
+    align-items: baseline;
+  }
+
+  .idx {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    font-size: clamp(24px, 3.4vw, 34px);
+    line-height: 1;
+    margin: 0;
+  }
+
+  .notes p { margin: 0; max-width: 60ch; }
+  .notes p.lede { color: var(--text); }
+  .notes p.sub { color: var(--muted); }
+
+  .delta {
+    border-left: 2px solid var(--key);
+    background: var(--panel);
+    padding: 12px 16px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--muted);
+    max-width: 66ch;
+    overflow-x: auto;
+  }
+
+  .delta b { color: var(--text); font-weight: 400; }
+
+  .specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .specs span {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--rule);
+    padding: 5px 9px;
+  }
+
+  .pick {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--rule);
+    padding: 10px 14px;
+    align-self: flex-start;
+  }
+
+  .pick:hover { color: var(--text); border-color: var(--muted); }
+  .pick input { position: absolute; opacity: 0; pointer-events: none; }
+
+  .dot {
+    width: 9px;
+    height: 9px;
+    border: 1px solid var(--muted);
+    border-radius: 50%;
+    flex: none;
+  }
+
+  .pick:has(input:checked) { color: var(--key); border-color: var(--key); background: var(--key-soft); }
+  .pick:has(input:checked) .dot { background: var(--key); border-color: var(--key); }
+  .pick:has(input:focus-visible) { outline: 2px solid var(--key); outline-offset: 2px; }
+
+  /* ---------- the poster renders ---------- */
+
+  .poster {
+    container-type: inline-size;
+    position: relative;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    background: #0a0a0c;
+    border: 1px solid var(--rule);
+    isolation: isolate;
+  }
+
+  .poster.strip { aspect-ratio: 16 / 5; }
+  .poster.daylight { background: #efeee9; }
+
+  .floor {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 34%;
+    background: radial-gradient(120% 150% at 50% 120%, rgba(255, 252, 245, 0.30), rgba(255, 252, 245, 0) 62%);
+  }
+
+  .beam {
+    position: absolute;
+    top: -2%;
+    left: 50%;
+    width: 78%;
+    height: 84%;
+    transform: translateX(-50%);
+    background: linear-gradient(to bottom, rgba(255, 250, 240, 0.42), rgba(255, 250, 240, 0.05) 78%, rgba(255, 250, 240, 0));
+    clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
+    filter: blur(6px);
+  }
+
+  .drop {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.55) 60%, rgba(0, 0, 0, 0) 100%);
+    border-radius: 50%;
+  }
+
+  .slab { position: absolute; left: 50%; transform: translateX(-50%); }
+
+  .slab .edge {
+    position: absolute;
+    inset: 22% 0 0 0;
+    background: linear-gradient(to bottom, #6e6a63, #3a3835 70%, #232220);
+    border-radius: 0 0 50% 50% / 0 0 62% 62%;
+    box-shadow: inset 0 -6px 10px rgba(0, 0, 0, 0.55);
+  }
+
+  .slab .top {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 44%;
+    border-radius: 50%;
+    background:
+      radial-gradient(70% 120% at 42% 20%, #d8d3c8, #a9a49a 55%, #7d7a73 100%);
+    box-shadow: 0 0 18px rgba(255, 245, 225, 0.16);
+  }
+
+  .daylight .slab .edge { background: linear-gradient(to bottom, #57544e, #2e2d2a); }
+  .daylight .slab .top { background: radial-gradient(70% 120% at 42% 20%, #8f8b83, #5f5c56 60%, #454340 100%); box-shadow: none; }
+  .daylight .drop { background: radial-gradient(closest-side, rgba(70, 66, 60, 0.34), rgba(70, 66, 60, 0) 100%); }
+
+  .grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.30;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- placeholder copy layer ---------- */
+
+  .copy {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 6cqw;
+    color: #f2efe8;
+    font-family: var(--display);
+    z-index: 3;
+  }
+
+  .daylight .copy { color: #1a1a1c; }
+
+  body.hide-copy .copy { display: none; }
+
+  .ph {
+    display: inline-block;
+    min-width: 2ch;
+    outline: none;
+    border-bottom: 1px dashed rgba(227, 178, 115, 0.55);
+    padding-bottom: 0.08em;
+  }
+
+  .daylight .ph { border-bottom-color: rgba(138, 90, 31, 0.5); }
+  .ph:focus { background: rgba(227, 178, 115, 0.18); }
+  .daylight .ph:focus { background: rgba(138, 90, 31, 0.14); }
+  .ph:empty::before { content: attr(data-ph); color: rgba(227, 178, 115, 0.85); }
+  .daylight .ph:empty::before { color: rgba(138, 90, 31, 0.9); }
+  body.clean-copy .ph { border-bottom-color: transparent; }
+
+  .eyebrow {
+    font-size: 2.6cqw;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+  }
+
+  .headline {
+    font-size: 8.4cqw;
+    font-weight: 700;
+    line-height: 0.94;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .descriptor {
+    font-family: var(--serif);
+    font-size: 3.1cqw;
+    line-height: 1.4;
+    opacity: 0.82;
+  }
+
+  .price {
+    font-family: var(--mono);
+    font-size: 9cqw;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .was {
+    font-family: var(--mono);
+    font-size: 3cqw;
+    opacity: 0.6;
+    text-decoration: line-through;
+  }
+
+  .promo {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 2.6cqw;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+    padding: 0.5em 0.8em;
+  }
+
+  .fineprint {
+    font-family: var(--mono);
+    font-size: 2.1cqw;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.62;
+    display: flex;
+    justify-content: space-between;
+    gap: 2cqw;
+    border-top: 1px solid currentColor;
+    padding-top: 1.6cqw;
+  }
+
+  .spacer { flex: 1; }
+  .stack { display: flex; flex-direction: column; gap: 1.6cqw; }
+  .row { display: flex; align-items: baseline; gap: 2.4cqw; }
+  .center { text-align: center; align-items: center; }
+
+  /* ---------- per-direction staging ---------- */
+
+  /* 01 monolith */
+  .d1 .slab { width: 58%; bottom: 30%; height: 13%; }
+  .d1 .drop { width: 52%; height: 7%; bottom: 17%; }
+  .d1 .copy { align-items: center; text-align: center; }
+
+  /* 02 off-axis */
+  .d2 .beam { left: 72%; width: 60%; height: 74%; clip-path: polygon(44% 0, 58% 0, 100% 100%, 8% 100%); }
+  .d2 .slab { left: 68%; width: 52%; bottom: 24%; height: 12%; }
+  .d2 .drop { left: 68%; width: 46%; height: 6%; bottom: 13%; }
+  .d2 .floor { height: 28%; background: radial-gradient(110% 150% at 68% 120%, rgba(255, 252, 245, 0.26), rgba(255, 252, 245, 0) 60%); }
+  .d2 .copy > .stack { max-width: 64%; }
+  .d2 .headline { font-size: 6.8cqw; }
+
+  /* 03 double plinth */
+  .d3 .beam { width: 70%; height: 92%; background: linear-gradient(to bottom, rgba(255,250,240,0.34), rgba(255,250,240,0.04) 80%, rgba(255,250,240,0)); }
+  .d3 .slab.upper { width: 40%; bottom: 52%; height: 9%; }
+  .d3 .slab.lower { width: 58%; bottom: 26%; height: 13%; }
+  .d3 .drop.upper { width: 34%; height: 4%; bottom: 46%; opacity: 0.7; }
+  .d3 .drop.lower { width: 52%; height: 7%; bottom: 14%; }
+
+  /* 04 shelf strip */
+  .d4 .beam { left: 22%; width: 34%; height: 100%; clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%); }
+  .d4 .slab { left: 22%; width: 20%; bottom: 26%; height: 22%; }
+  .d4 .drop { left: 22%; width: 18%; height: 11%; bottom: 12%; }
+  .d4 .floor { height: 46%; background: radial-gradient(60% 140% at 22% 120%, rgba(255, 252, 245, 0.28), rgba(255, 252, 245, 0) 60%); }
+  .d4 .copy { flex-direction: row; align-items: center; gap: 4cqw; padding: 3cqw 4cqw; }
+  .d4 .headline { font-size: 4.4cqw; }
+  .d4 .price { font-size: 5.4cqw; }
+  .d4 .eyebrow, .d4 .promo { font-size: 1.5cqw; }
+  .d4 .descriptor { font-size: 1.7cqw; }
+  .d4 .fineprint { font-size: 1.3cqw; border-top: none; border-left: 1px solid currentColor; padding: 0 0 0 2cqw; flex-direction: column; }
+
+  /* 05 daylight */
+  .d5 .beam { background: linear-gradient(to bottom, rgba(255,255,255,0.85), rgba(255,255,255,0) 72%); filter: blur(14px); }
+  .d5 .floor { background: radial-gradient(120% 150% at 50% 120%, rgba(255,255,255,0.9), rgba(255,255,255,0) 60%); }
+  .d5 .slab { width: 54%; bottom: 34%; height: 12%; }
+  .d5 .drop { width: 48%; height: 6%; bottom: 22%; }
+  .d5 .grain { opacity: 0.16; mix-blend-mode: multiply; }
+
+  /* ---------- sticky selection bar ---------- */
+
+  .bar {
+    position: fixed;
+    inset: auto 0 0 0;
+    background: var(--panel-2);
+    border-top: 1px solid var(--rule);
+    z-index: 20;
+  }
+
+  .bar-inner {
+    max-width: var(--shell);
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .bar-state {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  .bar-state strong { color: var(--key); font-weight: 400; }
+
+  .brief {
+    padding: 44px 0 56px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 32px;
+  }
+
+  .brief h3 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--key);
+    margin: 0 0 10px;
+    font-weight: 400;
+  }
+
+  .brief ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
+  .brief li { margin-bottom: 6px; }
+
+  @media (max-width: 760px) {
+    .direction { grid-template-columns: 1fr; gap: 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<header class="masthead shell">
+  <div class="stack">
+    <div class="kicker">Concept review — five directions, one prompt</div>
+    <h1>Levitating<br>Stone Plinth <em>/ In-store</em></h1>
+    <p class="standfirst">
+      One source prompt, staged five ways. Each render below is a live mock of the printed piece,
+      with the sales-poster fields left open — click any dashed field and type your own product,
+      price and promo to see how the copy sits before we commit to a final render.
+    </p>
+  </div>
+
+  <dl class="jobmeta">
+    <div><dt>Source prompt</dt><dd>PLINTH-001</dd></div>
+    <div><dt>Directions</dt><dd>05</dd></div>
+    <div><dt>Trim</dt><dd>A1 / 594×841</dd></div>
+    <div><dt>Colour</dt><dd>Greyscale + spot</dd></div>
+    <div><dt>Stage</dt><dd>Pre-render</dd></div>
+  </dl>
+
+  <div class="toolbar">
+    <button type="button" id="toggle-copy" aria-pressed="true">Poster fields: on</button>
+    <button type="button" id="toggle-marks" aria-pressed="true">Field markers: on</button>
+    <button type="button" id="reset-copy">Clear typed copy</button>
+    <span class="hint">Fields are editable — click and type.</span>
+  </div>
+</header>
+
+<main class="shell directions">
+
+  <!-- 01 -->
+  <section class="direction" data-dir="01">
+    <div class="stage">
+      <div class="poster d1">
+        <div class="beam"></div>
+        <div class="floor"></div>
+        <div class="drop"></div>
+        <div class="slab"><div class="edge"></div><div class="top"></div></div>
+        <div class="grain"></div>
+        <div class="copy">
+          <div class="eyebrow ph" contenteditable="true" data-ph="Brand / department"></div>
+          <div class="spacer"></div>
+          <div class="stack center">
+            <div class="headline ph" contenteditable="true" data-ph="Product name"></div>
+            <div class="descriptor ph" contenteditable="true" data-ph="One line of product copy"></div>
+          </div>
+          <div class="spacer"></div>
+          <div class="stack center" style="gap:2.4cqw">
+            <div class="row">
+              <span class="was ph" contenteditable="true" data-ph="Was 00.00"></span>
+              <span class="price ph" contenteditable="true" data-ph="00.00"></span>
+            </div>
+            <span class="promo ph" contenteditable="true" data-ph="Promo mechanic"></span>
+          </div>
+          <div class="fineprint" style="margin-top:5cqw">
+            <span class="ph" contenteditable="true" data-ph="SKU 000000"></span>
+            <span class="ph" contenteditable="true" data-ph="Offer ends 00.00.00"></span>
+          </div>
+        </div>
+      </div>
+      <div class="stage-note"><span>A1 portrait</span><span>End-cap / window bay</span></div>
+    </div>
+
+    <div class="notes">
+      <div class="head"><span class="idx">01</span><h2>Monolith</h2></div>
+      <p class="lede">The straight read of the reference. Stone dead-centre, beam falling full height, two-thirds of the frame given to black. Price and promo sit under the plinth so the stone acts as a shelf for the offer.</p>
+      <p class="sub">Strongest when it can be seen from distance — the negative space is what makes it carry across a shop floor.</p>
+      <div class="delta"><b>Prompt delta:</b> baseline. Single overhead key, 45° cone, no fill.</div>
+      <div class="specs"><span>Centred</span><span>Max negative space</span><span>Long viewing distance</span></div>
+      <label class="pick"><input type="radio" name="direction" value="01 Monolith"><span class="dot"></span>Select this direction</label>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="direction" data-dir="02">
+    <div class="stage">
+      <div class="poster d2">
+        <div class="beam"></div>
+        <div class="floor"></div>
+        <div class="drop"></div>
+        <div class="slab"><div class="edge"></div><div class="top"></div></div>
+        <div class="grain"></div>
+        <div class="copy">
+          <div class="eyebrow ph" contenteditable="true" data-ph="Brand / department"></div>
+          <div class="spacer"></div>
+          <div class="stack">
+            <div class="headline ph" contenteditable="true" data-ph="Product name"></div>
+            <div class="descriptor ph" contenteditable="true" data-ph="One line of product copy"></div>
+            <div class="row" style="margin-top:2cqw">
+              <span class="price ph" contenteditable="true" data-ph="00.00"></span>
+              <span class="was ph" contenteditable="true" data-ph="Was 00.00"></span>
+            </div>
+            <span class="promo ph" contenteditable="true" data-ph="Promo mechanic" style="align-self:flex-start"></span>
+          </div>
+          <div class="fineprint" style="margin-top:4cqw">
+            <span class="ph" contenteditable="true" data-ph="SKU 000000"></span>
+            <span class="ph" contenteditable="true" data-ph="Offer ends 00.00.00"></span>
+          </div>
+        </div>
+      </div>
+      <div class="stage-note"><span>A1 portrait</span><span>Aisle / gondola</span></div>
+    </div>
+
+    <div class="notes">
+      <div class="head"><span class="idx">02</span><h2>Off-axis</h2></div>
+      <p class="lede">Plinth and beam pushed to the right third; the copy column drops into the cleared left side. The offer reads first, the object second — closer to how a shopper scans a poster at arm's length.</p>
+      <p class="sub">Handles long product names and multi-line promos without crowding the stone.</p>
+      <div class="delta"><b>Prompt delta:</b> key light offset 30° right, stone at right third, floor pool follows the light.</div>
+      <div class="specs"><span>Copy-led</span><span>Left column</span><span>Close viewing</span></div>
+      <label class="pick"><input type="radio" name="direction" value="02 Off-axis"><span class="dot"></span>Select this direction</label>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="direction" data-dir="03">
+    <div class="stage">
+      <div class="poster d3">
+        <div class="beam"></div>
+        <div class="floor"></div>
+        <div class="drop upper"></div>
+        <div class="slab upper"><div class="edge"></div><div class="top"></div></div>
+        <div class="drop lower"></div>
+        <div class="slab lower"><div class="edge"></div><div class="top"></div></div>
+        <div class="grain"></div>
+        <div class="copy">
+          <div class="eyebrow ph" contenteditable="true" data-ph="Brand / department"></div>
+          <div class="spacer"></div>
+          <div class="stack center">
+            <div class="headline ph" contenteditable="true" data-ph="Product name" style="font-size:6.6cqw"></div>
+            <div class="row" style="justify-content:center">
+              <span class="was ph" contenteditable="true" data-ph="Was 00.00"></span>
+              <span class="price ph" contenteditable="true" data-ph="00.00"></span>
+            </div>
+            <span class="promo ph" contenteditable="true" data-ph="Buy 2 save 00%"></span>
+          </div>
+          <div class="fineprint" style="margin-top:4cqw">
+            <span class="ph" contenteditable="true" data-ph="SKU 000000"></span>
+            <span class="ph" contenteditable="true" data-ph="Offer ends 00.00.00"></span>
+          </div>
+        </div>
+      </div>
+      <div class="stage-note"><span>A1 portrait</span><span>Multi-buy / bundle</span></div>
+    </div>
+
+    <div class="notes">
+      <div class="head"><span class="idx">03</span><h2>Double plinth</h2></div>
+      <p class="lede">Two slabs stacked in the same column of light, the upper one smaller and dimmer. Built for multi-buy: one plinth per item, the mechanic sitting in the gap between them.</p>
+      <p class="sub">The only direction where the staging carries an actual message — don't use it for a single-product drop.</p>
+      <div class="delta"><b>Prompt delta:</b> two stone discs on one vertical axis, upper disc 60% scale, shared beam, two shadows at different densities.</div>
+      <div class="specs"><span>Multi-buy</span><span>Two products</span><span>Vertical axis</span></div>
+      <label class="pick"><input type="radio" name="direction" value="03 Double plinth"><span class="dot"></span>Select this direction</label>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="direction wide" data-dir="04">
+    <div class="stage">
+      <div class="poster strip d4">
+        <div class="beam"></div>
+        <div class="floor"></div>
+        <div class="drop"></div>
+        <div class="slab"><div class="edge"></div><div class="top"></div></div>
+        <div class="grain"></div>
+        <div class="copy">
+          <div class="stack" style="flex:1">
+            <div class="eyebrow ph" contenteditable="true" data-ph="Brand / department"></div>
+            <div class="headline ph" contenteditable="true" data-ph="Product name"></div>
+            <div class="descriptor ph" contenteditable="true" data-ph="One line of product copy"></div>
+          </div>
+          <div class="stack" style="align-items:flex-end">
+            <span class="was ph" contenteditable="true" data-ph="Was 00.00"></span>
+            <span class="price ph" contenteditable="true" data-ph="00.00"></span>
+            <span class="promo ph" contenteditable="true" data-ph="Promo mechanic"></span>
+          </div>
+          <div class="fineprint">
+            <span class="ph" contenteditable="true" data-ph="SKU 000000"></span>
+            <span class="ph" contenteditable="true" data-ph="Ends 00.00.00"></span>
+            <span class="ph" contenteditable="true" data-ph="Aisle 00"></span>
+          </div>
+        </div>
+      </div>
+      <div class="stage-note"><span>Shelf-edge strip / header board</span><span>Cropped from the same set-up</span></div>
+    </div>
+
+    <div class="notes" style="margin-top:24px">
+      <div class="head"><span class="idx">04</span><h2>Shelf edge</h2></div>
+      <p class="lede">The landscape crop, for shelf talkers, gondola headers and till-point strips. Stone shrinks to a marker at the left, and the price block anchors the right where the eye exits.</p>
+      <p class="sub">Same lighting set-up as 01, re-framed rather than re-shot — so it can ship as a family with whichever portrait direction you pick.</p>
+      <div class="delta"><b>Prompt delta:</b> 16:5 crop, stone at left quarter, beam clipped by the top edge, floor pool widened.</div>
+      <div class="specs"><span>Landscape</span><span>Shelf talker</span><span>Pairs with 01</span></div>
+      <label class="pick"><input type="radio" name="direction" value="04 Shelf edge"><span class="dot"></span>Select this direction</label>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="direction" data-dir="05">
+    <div class="stage">
+      <div class="poster daylight d5">
+        <div class="beam"></div>
+        <div class="floor"></div>
+        <div class="drop"></div>
+        <div class="slab"><div class="edge"></div><div class="top"></div></div>
+        <div class="grain"></div>
+        <div class="copy">
+          <div class="eyebrow ph" contenteditable="true" data-ph="Brand / department"></div>
+          <div class="spacer"></div>
+          <div class="stack">
+            <div class="headline ph" contenteditable="true" data-ph="Product name"></div>
+            <div class="descriptor ph" contenteditable="true" data-ph="One line of product copy"></div>
+          </div>
+          <div class="spacer"></div>
+          <div class="row" style="justify-content:space-between;align-items:flex-end">
+            <span class="promo ph" contenteditable="true" data-ph="Promo mechanic"></span>
+            <span class="price ph" contenteditable="true" data-ph="00.00"></span>
+          </div>
+          <div class="fineprint" style="margin-top:4cqw">
+            <span class="ph" contenteditable="true" data-ph="SKU 000000"></span>
+            <span class="ph" contenteditable="true" data-ph="Offer ends 00.00.00"></span>
+          </div>
+        </div>
+      </div>
+      <div class="stage-note"><span>A1 portrait</span><span>Window / daylight frontage</span></div>
+    </div>
+
+    <div class="notes">
+      <div class="head"><span class="idx">05</span><h2>Daylight</h2></div>
+      <p class="lede">The negative of the set: bright bone-white ground, dark stone, shadow reduced to a soft grey pool. Nothing about the staging changes — only which side of the contrast the stone sits on.</p>
+      <p class="sub">The practical argument for it: black floods eat ink and go grey under shop fluorescents. This one holds at 60% coverage and survives a sun-facing window.</p>
+      <div class="delta"><b>Prompt delta:</b> invert ground to bone white, stone in dark basalt, diffuse overhead key, shadow at 20% density.</div>
+      <div class="specs"><span>Light ground</span><span>Print-friendly</span><span>Daylight-safe</span></div>
+      <label class="pick"><input type="radio" name="direction" value="05 Daylight"><span class="dot"></span>Select this direction</label>
+    </div>
+  </section>
+
+</main>
+
+<section class="shell brief">
+  <div>
+    <h3>Fields on every poster</h3>
+    <ul>
+      <li>Brand or department line</li>
+      <li>Product name</li>
+      <li>One line of product copy</li>
+      <li>Price, with optional was-price</li>
+      <li>Promo mechanic</li>
+      <li>SKU and offer end date</li>
+    </ul>
+  </div>
+  <div>
+    <h3>What stays fixed</h3>
+    <ul>
+      <li>Single overhead key, no fill light</li>
+      <li>Raw unpolished stone, chiselled edge</li>
+      <li>Visible gap between stone and shadow</li>
+      <li>Greyscale only — no colour cast</li>
+      <li>Seamless ground, no horizon line</li>
+    </ul>
+  </div>
+  <div>
+    <h3>Next step</h3>
+    <ul>
+      <li>Pick a direction above</li>
+      <li>Send final product name, price and dates</li>
+      <li>We render at 300dpi with bleed</li>
+      <li>Shelf-edge crop supplied alongside</li>
+    </ul>
+  </div>
+</section>
+
+<div class="bar">
+  <div class="bar-inner">
+    <span class="bar-state" id="bar-state">No direction selected — pick one above.</span>
+    <button type="button" id="confirm">Lock direction</button>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var state = document.getElementById('bar-state');
+    var chosen = null;
+
+    document.querySelectorAll('input[name="direction"]').forEach(function (input) {
+      input.addEventListener('change', function () {
+        chosen = input.value;
+        document.querySelectorAll('.direction').forEach(function (d) { d.classList.remove('selected'); });
+        input.closest('.direction').classList.add('selected');
+        state.innerHTML = 'Selected: <strong>' + chosen + '</strong> — lock it in when you\'re happy.';
+      });
+    });
+
+    document.getElementById('confirm').addEventListener('click', function () {
+      state.innerHTML = chosen
+        ? 'Locked: <strong>' + chosen + '</strong>. Send final copy and we\'ll render it.'
+        : 'Nothing selected yet — choose a direction first.';
+    });
+
+    var copyBtn = document.getElementById('toggle-copy');
+    copyBtn.addEventListener('click', function () {
+      var on = document.body.classList.toggle('hide-copy');
+      copyBtn.setAttribute('aria-pressed', String(!on));
+      copyBtn.textContent = on ? 'Poster fields: off' : 'Poster fields: on';
+    });
+
+    var markBtn = document.getElementById('toggle-marks');
+    markBtn.addEventListener('click', function () {
+      var off = document.body.classList.toggle('clean-copy');
+      markBtn.setAttribute('aria-pressed', String(!off));
+      markBtn.textContent = off ? 'Field markers: off' : 'Field markers: on';
+    });
+
+    document.getElementById('reset-copy').addEventListener('click', function () {
+      document.querySelectorAll('.ph').forEach(function (el) { el.textContent = ''; });
+    });
+
+    document.querySelectorAll('.ph').forEach(function (el) {
+      el.addEventListener('paste', function (e) {
+        e.preventDefault();
+        var text = (e.clipboardData || window.clipboardData).getData('text');
+        document.execCommand('insertText', false, text.replace(/\s+/g, ' '));
+      });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+      });
+    });
+  })();
+</script>
+</body>
+</html>
