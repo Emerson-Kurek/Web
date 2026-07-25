@@ -30,6 +30,11 @@
     --grain: 0.26;         /* film grain over the whole frame      */
     --ghost: 0.055;         /* brand mark sunk into the empty field */
     --vignette: 0.5;       /* corner falloff, adds depth to the box*/
+    --cove: 0.30;          /* seam where the floor curves up the wall */
+    --haze: 0.085;         /* air the beam passes through           */
+    --core: 0.055;         /* hot centre inside the cone            */
+    --bounce: 0.10;        /* floor light returning under the plinth*/
+    --grade: 0.16;         /* cool shadows against the warm key     */
 
     /* ---- STAGE ---- */
     --void-top: #08090b;
@@ -175,6 +180,88 @@
     );
   }
 
+  /* the cyclorama seam: floor curving up into the back wall */
+  .cove {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 46%;
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, calc(var(--cove) * 0.55)) 16%,
+        rgba(0, 0, 0, calc(var(--cove) * 0.22)) 34%,
+        rgba(0, 0, 0, 0) 58%
+      ),
+      radial-gradient(
+        150% 78% at 50% 122%,
+        rgba(var(--key-warmth), calc(var(--cove) * 0.14)),
+        rgba(var(--key-warmth), 0) 62%
+      );
+  }
+
+  /* air in the lower half for the cone to cut through */
+  .haze {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 54%;
+    background: radial-gradient(
+      86% 118% at var(--key-x) 104%,
+      rgba(var(--key-warmth), var(--haze)),
+      rgba(var(--key-warmth), calc(var(--haze) * 0.32)) 46%,
+      rgba(var(--key-warmth), 0) 76%
+    );
+  }
+
+  /* brighter centre of the cone, where the throw is densest */
+  .core {
+    position: absolute;
+    top: -1%;
+    left: var(--key-x);
+    width: calc(var(--beam-width) * 0.46);
+    height: calc(var(--beam-height) * 0.98);
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to bottom,
+      rgba(var(--key-warmth), 0) 0%,
+      rgba(var(--key-warmth), var(--core)) 22%,
+      rgba(var(--key-warmth), 0) 90%
+    );
+    clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 50%, transparent 100%);
+  }
+
+  /* light off the floor returning to the underside of the stone */
+  .bounce {
+    position: absolute;
+    left: var(--key-x);
+    bottom: 27.5%;
+    width: 42%;
+    height: 5%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      rgba(var(--key-warmth), var(--bounce)),
+      rgba(var(--key-warmth), 0) 100%
+    );
+  }
+
+  /* grade: shadows cool off, the key stays warm */
+  .grade {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      rgba(22, 30, 42, var(--grade)) 0%,
+      rgba(22, 30, 42, calc(var(--grade) * 0.45)) 44%,
+      rgba(255, 246, 230, calc(var(--grade) * 0.10)) 78%,
+      rgba(22, 30, 42, calc(var(--grade) * 0.30)) 100%
+    );
+  }
+
   .beam {
     position: absolute;
     top: -1%;
@@ -191,8 +278,8 @@
     clip-path: polygon(
       calc(50% - var(--beam-throat) / 2) 0,
       calc(50% + var(--beam-throat) / 2) 0,
-      92% 100%,
-      8% 100%
+      100% 100%,
+      0 100%
     );
     filter: blur(calc(var(--beam-blur) * var(--k)));
     mask-image: linear-gradient(to right, transparent 0%, #000 36%, #000 64%, transparent 100%);
@@ -538,13 +625,17 @@
     <div class="sheet">
 
       <div class="ghost"></div>
+      <div class="cove"></div>
       <div class="beam"></div>
+      <div class="core"></div>
+      <div class="haze"></div>
       <div class="pool"></div>
       <div class="shadow"></div>
       <div class="slab">
         <div class="edge"></div>
         <div class="top"></div>
       </div>
+      <div class="bounce"></div>
       <div class="spill"></div>
       <div class="contact"></div>
       <div class="fixture">
@@ -640,6 +731,7 @@
         </svg>
       </div>
       <div class="vignette"></div>
+      <div class="grade"></div>
       <div class="grain"></div>
 
       <div class="copy">
