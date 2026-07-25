@@ -66,6 +66,14 @@ frosted lens on an off-centre radial gradient with fine grain over it. Drawn
 unlit, so whatever set it is dropped into supplies the light. It is inlined in
 the poster rather than linked, so the poster stays a single portable file.
 
+## Sheet sizes
+
+The poster carries its layout in percentages and its type in millimetres
+multiplied by `--k`, so one file serves both sheets. `--k` is 1 at A1
+(594x841 + 3mm bleed) and 0.363 at US Letter (8.5 x 11in, no bleed, 14mm
+safety), and the toolbar switches between them. Letter is the home-printable
+version and fills the page edge to edge at exactly 8.5:11.
+
 ## Sales poster fields
 
 Every direction carries the same set of editable fields:
