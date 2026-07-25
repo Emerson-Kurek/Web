@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-label="12 inch round LED flush mount panel, unlit">
+  <title>12&#8243; round LED flush-mount panel — unlit</title>
+
+  <defs>
+    <!-- outer trim: matte white, very slightly cooler and darker toward the bottom -->
+    <linearGradient id="lp-bezel" x1="0.38" y1="0" x2="0.6" y2="1">
+      <stop offset="0"    stop-color="#ffffff"/>
+      <stop offset="0.42" stop-color="#f7f6f3"/>
+      <stop offset="0.78" stop-color="#eae8e3"/>
+      <stop offset="1"    stop-color="#dedbd5"/>
+    </linearGradient>
+
+    <!-- specular line riding the outer edge of the trim -->
+    <linearGradient id="lp-rim" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0"    stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="1"    stop-color="#b9b5ae" stop-opacity="0.55"/>
+    </linearGradient>
+
+    <!-- the recess seam: shadowed at the top, catching light along the bottom -->
+    <linearGradient id="lp-seam" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0"    stop-color="#a8a49d"/>
+      <stop offset="0.35" stop-color="#cbc7c0"/>
+      <stop offset="0.72" stop-color="#f6f5f2"/>
+      <stop offset="1"    stop-color="#ffffff"/>
+    </linearGradient>
+
+    <!-- frosted lens, unlit: highlight up and left, falling to warm grey at the rim -->
+    <radialGradient id="lp-diffuser" cx="0.42" cy="0.34" r="0.78">
+      <stop offset="0"    stop-color="#fdfdfc"/>
+      <stop offset="0.38" stop-color="#f7f6f3"/>
+      <stop offset="0.68" stop-color="#efedE8"/>
+      <stop offset="0.88" stop-color="#e4e1db"/>
+      <stop offset="1"    stop-color="#d8d5ce"/>
+    </radialGradient>
+
+    <!-- contact shading where the lens drops into the trim -->
+    <radialGradient id="lp-lens-vignette" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0"    stop-color="#000000" stop-opacity="0"/>
+      <stop offset="0.82" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="0.96" stop-color="#3a3733" stop-opacity="0.10"/>
+      <stop offset="1"    stop-color="#3a3733" stop-opacity="0.18"/>
+    </radialGradient>
+
+    <!-- broad soft sheen across the upper left of the lens -->
+    <radialGradient id="lp-sheen" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0"   stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.6" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="1"   stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- bevel: the trim rolls off toward its inner edge -->
+    <radialGradient id="lp-bevel" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0"    stop-color="#000000" stop-opacity="0"/>
+      <stop offset="0.74" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="0.88" stop-color="#6a665f" stop-opacity="0.055"/>
+      <stop offset="0.96" stop-color="#ffffff" stop-opacity="0.28"/>
+      <stop offset="1"    stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- the frost itself: fine even grain over the lens only -->
+    <filter id="lp-frost" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="7" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.5" intercept="0"/>
+      </feComponentTransfer>
+    </filter>
+
+    <clipPath id="lp-lens-clip">
+      <circle cx="500" cy="500" r="388"/>
+    </clipPath>
+  </defs>
+
+  <!-- trim -->
+  <circle cx="500" cy="500" r="496" fill="url(#lp-bezel)"/>
+  <circle cx="500" cy="500" r="494" fill="none" stroke="url(#lp-rim)" stroke-width="4"/>
+  <circle cx="500" cy="500" r="496" fill="url(#lp-bevel)"/>
+
+  <!-- recess seam between trim and lens -->
+  <circle cx="500" cy="500" r="394" fill="none" stroke="url(#lp-seam)" stroke-width="8"/>
+
+  <!-- frosted lens -->
+  <circle cx="500" cy="500" r="388" fill="url(#lp-diffuser)"/>
+  <g clip-path="url(#lp-lens-clip)">
+    <ellipse cx="404" cy="352" rx="330" ry="290" fill="url(#lp-sheen)"/>
+    <rect x="112" y="112" width="776" height="776" filter="url(#lp-frost)" opacity="0.05"/>
+  </g>
+  <circle cx="500" cy="500" r="388" fill="url(#lp-lens-vignette)"/>
+</svg>

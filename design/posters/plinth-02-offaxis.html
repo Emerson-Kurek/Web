@@ -25,9 +25,8 @@
     --beam-blur: 24mm;     /* diffuse lens — no hard cone edge     */
     --pool: 0.20;          /* brightness of the floor pool         */
     --shadow-density: 0.58;/* soft: broad source, soft shadow      */
-    --lens: 0.94;          /* brightness of the fixture face       */
-    --lens-size: 25%;      /* fixture diameter, 12in round         */
-    --lens-glow: 0.24;     /* spill the fixture throws on the stone*/
+    --lens-size: 27%;      /* panel diameter, 12in round           */
+    --lens-glow: 0.14;     /* light the white panel bounces back   */
     --grain: 0.26;         /* film grain over the whole frame      */
 
     /* ---- STAGE ---- */
@@ -160,47 +159,45 @@
     mask-image: linear-gradient(to right, transparent 0%, #000 36%, #000 64%, transparent 100%);
   }
 
-  /* the product: 12in round flush mount, resting on the plinth */
+  /* the product: 12in round panel, standing upright on the plinth */
   .fixture {
     position: absolute;
     left: var(--key-x);
-    bottom: 33.2%;
+    bottom: 34.4%;
     width: var(--lens-size);
-    height: 6.2%;
+    aspect-ratio: 1;
     transform: translateX(-50%);
+    z-index: 1;
+    filter: drop-shadow(0 6mm 10mm rgba(0, 0, 0, 0.55));
+  }
+
+  .fixture svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* where the panel meets the stone */
+  .contact {
+    position: absolute;
+    left: var(--key-x);
+    bottom: 33.4%;
+    width: calc(var(--lens-size) * 0.86);
+    height: 1.7%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 100%);
+    filter: blur(1.6mm);
     z-index: 1;
   }
 
-  .fixture .rim {
-    position: absolute;
-    inset: 34% 0 0 0;
-    border-radius: 0 0 50% 50% / 0 0 74% 74%;
-    background: linear-gradient(to bottom, #e9e6df, #b9b5ad 58%, #8e8a83);
-    box-shadow: inset 0 -1.2mm 2mm rgba(0, 0, 0, 0.28);
-  }
-
-  .fixture .lens {
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 62%;
-    border-radius: 50%;
-    background: radial-gradient(
-      58% 108% at 46% 42%,
-      rgba(255, 255, 254, var(--lens)) 0%,
-      rgba(var(--key-warmth), calc(var(--lens) * 0.93)) 58%,
-      rgba(var(--key-warmth), calc(var(--lens) * 0.74)) 88%,
-      rgba(226, 222, 213, calc(var(--lens) * 0.62)) 100%
-    );
-    box-shadow: 0 0 14mm rgba(var(--key-warmth), 0.42);
-  }
-
-  /* spill the fixture throws onto the stone it sits on */
+  /* light the white panel bounces back onto the stone */
   .spill {
     position: absolute;
     left: var(--key-x);
-    bottom: 26%;
-    width: 46%;
-    height: 9%;
+    bottom: 30.5%;
+    width: 44%;
+    height: 6%;
     transform: translateX(-50%);
     border-radius: 50%;
     background: radial-gradient(
@@ -208,8 +205,7 @@
       rgba(var(--key-warmth), var(--lens-glow)),
       rgba(var(--key-warmth), 0) 100%
     );
-    filter: blur(3mm);
-    z-index: 1;
+    filter: blur(4mm);
   }
 
   .pool {
@@ -510,9 +506,98 @@
         <div class="top"></div>
       </div>
       <div class="spill"></div>
+      <div class="contact"></div>
       <div class="fixture">
-        <div class="rim"></div>
-        <div class="lens"></div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-label="12 inch round LED flush mount panel, unlit">
+          <title>12&#8243; round LED flush-mount panel — unlit</title>
+
+          <defs>
+            <!-- outer trim: matte white, very slightly cooler and darker toward the bottom -->
+            <linearGradient id="lp-bezel" x1="0.38" y1="0" x2="0.6" y2="1">
+              <stop offset="0"    stop-color="#ffffff"/>
+              <stop offset="0.42" stop-color="#f7f6f3"/>
+              <stop offset="0.78" stop-color="#eae8e3"/>
+              <stop offset="1"    stop-color="#dedbd5"/>
+            </linearGradient>
+
+            <!-- specular line riding the outer edge of the trim -->
+            <linearGradient id="lp-rim" x1="0.2" y1="0" x2="0.8" y2="1">
+              <stop offset="0"    stop-color="#ffffff" stop-opacity="0.95"/>
+              <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.35"/>
+              <stop offset="1"    stop-color="#b9b5ae" stop-opacity="0.55"/>
+            </linearGradient>
+
+            <!-- the recess seam: shadowed at the top, catching light along the bottom -->
+            <linearGradient id="lp-seam" x1="0.5" y1="0" x2="0.5" y2="1">
+              <stop offset="0"    stop-color="#a8a49d"/>
+              <stop offset="0.35" stop-color="#cbc7c0"/>
+              <stop offset="0.72" stop-color="#f6f5f2"/>
+              <stop offset="1"    stop-color="#ffffff"/>
+            </linearGradient>
+
+            <!-- frosted lens, unlit: highlight up and left, falling to warm grey at the rim -->
+            <radialGradient id="lp-diffuser" cx="0.42" cy="0.34" r="0.78">
+              <stop offset="0"    stop-color="#fdfdfc"/>
+              <stop offset="0.38" stop-color="#f7f6f3"/>
+              <stop offset="0.68" stop-color="#efedE8"/>
+              <stop offset="0.88" stop-color="#e4e1db"/>
+              <stop offset="1"    stop-color="#d8d5ce"/>
+            </radialGradient>
+
+            <!-- contact shading where the lens drops into the trim -->
+            <radialGradient id="lp-lens-vignette" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0"    stop-color="#000000" stop-opacity="0"/>
+              <stop offset="0.82" stop-color="#000000" stop-opacity="0"/>
+              <stop offset="0.96" stop-color="#3a3733" stop-opacity="0.10"/>
+              <stop offset="1"    stop-color="#3a3733" stop-opacity="0.18"/>
+            </radialGradient>
+
+            <!-- broad soft sheen across the upper left of the lens -->
+            <radialGradient id="lp-sheen" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0"   stop-color="#ffffff" stop-opacity="0.55"/>
+              <stop offset="0.6" stop-color="#ffffff" stop-opacity="0.16"/>
+              <stop offset="1"   stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+
+            <!-- bevel: the trim rolls off toward its inner edge -->
+            <radialGradient id="lp-bevel" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0"    stop-color="#000000" stop-opacity="0"/>
+              <stop offset="0.74" stop-color="#000000" stop-opacity="0"/>
+              <stop offset="0.88" stop-color="#6a665f" stop-opacity="0.055"/>
+              <stop offset="0.96" stop-color="#ffffff" stop-opacity="0.28"/>
+              <stop offset="1"    stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+
+            <!-- the frost itself: fine even grain over the lens only -->
+            <filter id="lp-frost" x="0%" y="0%" width="100%" height="100%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="7" result="n"/>
+              <feColorMatrix in="n" type="saturate" values="0"/>
+              <feComponentTransfer>
+                <feFuncA type="linear" slope="0.5" intercept="0"/>
+              </feComponentTransfer>
+            </filter>
+
+            <clipPath id="lp-lens-clip">
+              <circle cx="500" cy="500" r="388"/>
+            </clipPath>
+          </defs>
+
+          <!-- trim -->
+          <circle cx="500" cy="500" r="496" fill="url(#lp-bezel)"/>
+          <circle cx="500" cy="500" r="494" fill="none" stroke="url(#lp-rim)" stroke-width="4"/>
+          <circle cx="500" cy="500" r="496" fill="url(#lp-bevel)"/>
+
+          <!-- recess seam between trim and lens -->
+          <circle cx="500" cy="500" r="394" fill="none" stroke="url(#lp-seam)" stroke-width="8"/>
+
+          <!-- frosted lens -->
+          <circle cx="500" cy="500" r="388" fill="url(#lp-diffuser)"/>
+          <g clip-path="url(#lp-lens-clip)">
+            <ellipse cx="404" cy="352" rx="330" ry="290" fill="url(#lp-sheen)"/>
+            <rect x="112" y="112" width="776" height="776" filter="url(#lp-frost)" opacity="0.05"/>
+          </g>
+          <circle cx="500" cy="500" r="388" fill="url(#lp-lens-vignette)"/>
+        </svg>
       </div>
       <div class="grain"></div>
 

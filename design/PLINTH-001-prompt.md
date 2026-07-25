@@ -57,6 +57,15 @@ narrow cone, a diffuse falloff with no hard edge (translucent lens), and a soft
 contact shadow because a broad source cannot throw a hard one. The fixture
 itself sits on the plinth as the hero, throwing its own spill onto the stone.
 
+## Product asset
+
+`assets/led-panel-12in.svg` is a scalable, background-free build of the round
+LED panel: matte white trim with an outer specular edge and a soft inner bevel,
+a recess seam that reads shadowed at the top and lit along the bottom, and a
+frosted lens on an off-centre radial gradient with fine grain over it. Drawn
+unlit, so whatever set it is dropped into supplies the light. It is inlined in
+the poster rather than linked, so the poster stays a single portable file.
+
 ## Sales poster fields
 
 Every direction carries the same set of editable fields:
