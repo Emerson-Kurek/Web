@@ -57,6 +57,18 @@ narrow cone, a diffuse falloff with no hard edge (translucent lens), and a soft
 contact shadow because a broad source cannot throw a hard one. The fixture
 itself sits on the plinth as the hero, throwing its own spill onto the stone.
 
+## Clearance treatment
+
+The upper field carries the word CLEARANCE in outlined display type rather
+than a ghosted logo. Outline costs almost no ink over a large area, states the
+proposition in one word before a shopper reads anything else, and stays a tint
+rather than a solid so the discount flash remains the only saturated block on
+the sheet.
+
+The offer is a single ladder in the lower left, read in the order a shopper
+values it: what it was, what it is now, what percent off, what that saves,
+how long it lasts.
+
 ## Product asset
 
 `assets/led-panel-12in.svg` is a scalable, background-free build of the round
