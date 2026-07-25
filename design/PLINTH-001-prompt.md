@@ -44,6 +44,19 @@ seamless cyclorama, no horizon line, no props, no text.
 Direction 04 is a re-crop of 01's lighting set-up, so those two ship as a family.
 If 02 or 03 is chosen, the shelf-edge strip needs re-staging to match.
 
+## Live build: PLINTH-002
+
+`posters/plinth-02-offaxis.html` is direction 02 built for the Litup Lighting
+Hillsview-1 12in round surface mount (LIT5212WH-40K-WE), $64.00 marked down to
+$14.99.
+
+The staging departs from the reference prompt in one deliberate way: the poster
+is lit by the product's own published spec rather than a studio tungsten key.
+4000K neutral white instead of tungsten amber, a 120deg spread instead of a
+narrow cone, a diffuse falloff with no hard edge (translucent lens), and a soft
+contact shadow because a broad source cannot throw a hard one. The fixture
+itself sits on the plinth as the hero, throwing its own spill onto the stone.
+
 ## Sales poster fields
 
 Every direction carries the same set of editable fields:

@@ -15,17 +15,20 @@
      against the lighting references and nothing else moves.
      ---------------------------------------------------------- */
   :root {
-    --key-x: 72%;          /* horizontal centre of the beam        */
-    --key-warmth: 252, 246, 233;  /* tungsten white, rgb           */
-    --beam-top: 0.15;      /* opacity where the beam enters frame  */
+    --key-x: 72%;          /* horizontal centre of the fixture     */
+    --key-warmth: 247, 245, 238;  /* 4000K neutral white, rgb      */
+    --beam-top: 0.085;      /* opacity where the wash enters frame  */
     --beam-mid: 0.03;      /* opacity at the falloff shoulder      */
-    --beam-width: 44%;     /* width of the cone at the floor       */
-    --beam-throat: 7%;    /* width of the cone at the top edge    */
-    --beam-height: 72%;    /* how far down the visible cone reaches*/
-    --beam-blur: 26px;      /* haze softness on the cone edge       */
-    --pool: 0.22;          /* brightness of the floor pool         */
-    --shadow-density: 0.92;/* darkness of the contact shadow       */
-    --grain: 0.28;         /* film grain over the whole frame      */
+    --beam-width: 96%;     /* spread at the floor — 120° beam angle*/
+    --beam-throat: 25%;    /* fixture aperture, 12in round lens    */
+    --beam-height: 74%;    /* how far down the visible wash reaches*/
+    --beam-blur: 24mm;     /* diffuse lens — no hard cone edge     */
+    --pool: 0.20;          /* brightness of the floor pool         */
+    --shadow-density: 0.58;/* soft: broad source, soft shadow      */
+    --lens: 0.94;          /* brightness of the fixture face       */
+    --lens-size: 25%;      /* fixture diameter, 12in round         */
+    --lens-glow: 0.24;     /* spill the fixture throws on the stone*/
+    --grain: 0.26;         /* film grain over the whole frame      */
 
     /* ---- STAGE ---- */
     --void-top: #08090b;
@@ -144,8 +147,8 @@
     background: linear-gradient(
       to bottom,
       rgba(var(--key-warmth), var(--beam-top)),
-      rgba(var(--key-warmth), var(--beam-mid)) 74%,
-      rgba(var(--key-warmth), 0) 100%
+      rgba(var(--key-warmth), var(--beam-mid)) 62%,
+      rgba(var(--key-warmth), 0) 96%
     );
     clip-path: polygon(
       calc(50% - var(--beam-throat) / 2) 0,
@@ -154,7 +157,59 @@
       8% 100%
     );
     filter: blur(var(--beam-blur));
-    mask-image: linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 36%, #000 64%, transparent 100%);
+  }
+
+  /* the product: 12in round flush mount, resting on the plinth */
+  .fixture {
+    position: absolute;
+    left: var(--key-x);
+    bottom: 33.2%;
+    width: var(--lens-size);
+    height: 6.2%;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+
+  .fixture .rim {
+    position: absolute;
+    inset: 34% 0 0 0;
+    border-radius: 0 0 50% 50% / 0 0 74% 74%;
+    background: linear-gradient(to bottom, #e9e6df, #b9b5ad 58%, #8e8a83);
+    box-shadow: inset 0 -1.2mm 2mm rgba(0, 0, 0, 0.28);
+  }
+
+  .fixture .lens {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 62%;
+    border-radius: 50%;
+    background: radial-gradient(
+      58% 108% at 46% 42%,
+      rgba(255, 255, 254, var(--lens)) 0%,
+      rgba(var(--key-warmth), calc(var(--lens) * 0.93)) 58%,
+      rgba(var(--key-warmth), calc(var(--lens) * 0.74)) 88%,
+      rgba(226, 222, 213, calc(var(--lens) * 0.62)) 100%
+    );
+    box-shadow: 0 0 14mm rgba(var(--key-warmth), 0.42);
+  }
+
+  /* spill the fixture throws onto the stone it sits on */
+  .spill {
+    position: absolute;
+    left: var(--key-x);
+    bottom: 26%;
+    width: 46%;
+    height: 9%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      rgba(var(--key-warmth), var(--lens-glow)),
+      rgba(var(--key-warmth), 0) 100%
+    );
+    filter: blur(3mm);
+    z-index: 1;
   }
 
   .pool {
@@ -253,12 +308,12 @@
     display: flex;
     flex-direction: column;
     gap: 6mm;
-    max-width: 52%;
+    max-width: 56%;
   }
 
   .headline {
-    font-size: 46mm;
-    line-height: 0.92;
+    font-size: 39mm;
+    line-height: 0.94;
     font-weight: 700;
     letter-spacing: -0.035em;
     text-transform: uppercase;
@@ -267,10 +322,10 @@
 
   .descriptor {
     font-family: var(--serif);
-    font-size: 12mm;
+    font-size: 11mm;
     line-height: 1.34;
     color: var(--ink-dim);
-    max-width: 22ch;
+    max-width: 27ch;
   }
 
   .pricing {
@@ -282,7 +337,7 @@
 
   .now {
     font-family: var(--mono);
-    font-size: 76mm;
+    font-size: 70mm;
     line-height: 0.84;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.05em;
@@ -328,8 +383,26 @@
     margin-top: 2mm;
   }
 
+  .specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3mm 5mm;
+    margin-top: 3mm;
+    font-family: var(--mono);
+    font-size: 7.4mm;
+    line-height: 1;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .specs span {
+    border: 0.5mm solid var(--ink-dim);
+    padding: 3mm 4mm;
+  }
+
   .fineprint {
-    margin-top: 14mm;
+    margin-top: 10mm;
     padding-top: 5mm;
     border-top: 0.6mm solid var(--ink-dim);
     display: flex;
@@ -418,7 +491,7 @@
 <body>
 
 <div class="chrome">
-  <span class="chrome-id">PLINTH-002 · Off-axis · A1 594×841 + 3mm bleed · <b>$64.00 → $14.99</b></span>
+  <span class="chrome-id">PLINTH-002 · Litup Hillsview-1 · A1 594×841 + 3mm bleed · <b>$64.00 → $14.99</b></span>
   <button type="button" id="btn-guides" aria-pressed="false">Print guides</button>
   <button type="button" id="btn-clean" aria-pressed="false">Hide field markers</button>
   <button type="button" id="btn-grain" aria-pressed="true">Grain: on</button>
@@ -436,16 +509,21 @@
         <div class="edge"></div>
         <div class="top"></div>
       </div>
+      <div class="spill"></div>
+      <div class="fixture">
+        <div class="rim"></div>
+        <div class="lens"></div>
+      </div>
       <div class="grain"></div>
 
       <div class="copy">
-        <div class="eyebrow ph" contenteditable="true" data-ph="Brand / department"></div>
+        <div class="eyebrow" contenteditable="true">Litup Lighting &middot; Hillsview-1</div>
 
         <div class="spacer"></div>
 
         <div class="block">
-          <div class="headline ph" contenteditable="true" data-ph="Product name"></div>
-          <div class="descriptor ph" contenteditable="true" data-ph="One line of product copy"></div>
+          <div class="headline" contenteditable="true">12&Prime; Round<br>Surface Mount</div>
+          <div class="descriptor" contenteditable="true">Edge-lit LED flush mount, 0.95&Prime; slim &mdash; smooth, low-glare light with no plenum space needed. Equivalent to 125W incandescent.</div>
 
           <div class="pricing">
             <div class="now"><span class="cur">$</span>14.99</div>
@@ -453,10 +531,19 @@
           </div>
 
           <div class="save">Save $49.01</div>
+
+          <div class="specs">
+            <span>2800 lm</span>
+            <span>25 W</span>
+            <span>4000K</span>
+            <span>Dimmable</span>
+            <span>Wet location</span>
+            <span>5 yr warranty</span>
+          </div>
         </div>
 
         <div class="fineprint">
-          <span class="ph" contenteditable="true" data-ph="SKU 000000"></span>
+          <span contenteditable="true">LIT5212WH-40K-WE</span>
           <span class="ph" contenteditable="true" data-ph="Offer ends 00.00.00"></span>
         </div>
       </div>
