@@ -485,14 +485,28 @@
 
   /* the word that does the work the watermark was not doing */
   .clearance {
-    margin-top: calc(26mm * var(--k));
-    font-size: calc(60mm * var(--k));
+    margin-top: calc(20mm * var(--k));
+    font-size: calc(78mm * var(--k));
     line-height: 0.9;
     font-weight: 700;
     letter-spacing: 0.01em;
     text-transform: uppercase;
     color: transparent;
-    -webkit-text-stroke: calc(1.4mm * var(--k)) var(--accent);
+    -webkit-text-stroke: calc(1.7mm * var(--k)) var(--accent);
+  }
+
+  /* one line, doing one job: say why the light is worth having */
+  .hook {
+    margin-top: calc(16mm * var(--k));
+    font-family: var(--serif);
+    font-size: calc(23mm * var(--k));
+    line-height: 1.22;
+    color: var(--ink);
+  }
+
+  .hook em {
+    font-style: normal;
+    color: var(--accent-ink);
   }
 
   .block {
@@ -854,6 +868,8 @@
         <div class="eyebrow" contenteditable="true">Distinctive Lighting Concepts</div>
 
         <div class="clearance">Clearance</div>
+
+        <p class="hook">Better light for the whole room &mdash;<br><em>at a quarter of the price.</em></p>
 
         <div class="spacer"></div>
 
