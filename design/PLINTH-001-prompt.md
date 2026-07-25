@@ -59,11 +59,16 @@ itself sits on the plinth as the hero, throwing its own spill onto the stone.
 
 ## Clearance treatment
 
-The upper field carries the word CLEARANCE in outlined display type rather
-than a ghosted logo. Outline costs almost no ink over a large area, states the
-proposition in one word before a shopper reads anything else, and stays a tint
-rather than a solid so the discount flash remains the only saturated block on
-the sheet.
+The upper field carries a solid block of the brand orange with DON'T MISS OUT
+and CLEARANCE knocked out of it in near-black. This is the stopper: the poster
+sits on a table competing with a whole shop floor, so it has one job before it
+has any other, which is to be seen from across the room by someone who was not
+looking for it. A solid colour block is the only device on the sheet with
+enough mass to do that.
+
+Type on the block is near-black rather than white. Near-black on this orange
+runs about 7:1 contrast against roughly 2.4:1 for white, and it matches the
+discount flash, so the two orange blocks read as one family.
 
 The offer is a single ladder in the lower left, read in the order a shopper
 values it: what it was, what it is now, what percent off, what that saves,
@@ -107,8 +112,11 @@ The original dark set is kept as `body.night` and switches from the toolbar.
 
 The poster carries its layout in percentages and its type in millimetres
 multiplied by `--k`, so one file serves both sheets. `--k` is 1 at A1
-(594x841 + 3mm bleed) and 0.363 at US Letter (8.5 x 11in, no bleed, 14mm
-safety), and the toolbar switches between them. Letter is the home-printable
+(594x841 + 3mm bleed) and 0.363 at US Letter (8.5 x 11in, no bleed), and the
+toolbar switches between them. Safety is split: `--safety` horizontally,
+`--safety-y` vertically. Letter runs 14mm at the sides and 21mm top and bottom,
+because home printers clip the head and foot of the sheet more than the flanks,
+and the item number lives at the foot. Letter is the home-printable
 version and fills the page edge to edge at exactly 8.5:11.
 
 ## Sales poster fields
