@@ -528,12 +528,11 @@
     display: flex;
     align-items: baseline;
     gap: calc(9mm * var(--k));
-    margin-top: calc(4mm * var(--k));
   }
 
   .now {
     font-family: var(--mono);
-    font-size: calc(70mm * var(--k));
+    font-size: calc(88mm * var(--k));
     line-height: 0.84;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.05em;
@@ -548,7 +547,7 @@
 
   .was {
     font-family: var(--mono);
-    font-size: calc(17mm * var(--k));
+    font-size: calc(21mm * var(--k));
     line-height: 1;
     color: var(--ink-dim);
     font-variant-numeric: tabular-nums;
@@ -567,30 +566,38 @@
     transform: rotate(-4deg);
   }
 
-  .anchor {
+  .lower {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: calc(12mm * var(--k));
+    margin-top: calc(9mm * var(--k));
+  }
+
+  .deal {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: calc(3mm * var(--k));
+    gap: calc(5mm * var(--k));
   }
 
   .flash {
     font-family: var(--display);
-    font-size: calc(18mm * var(--k));
+    font-size: calc(23mm * var(--k));
     line-height: 1;
     font-weight: 700;
     letter-spacing: 0.02em;
     text-transform: uppercase;
     color: var(--on-accent);
     background: var(--accent);
-    padding: calc(5mm * var(--k)) calc(7mm * var(--k));
+    padding: calc(6mm * var(--k)) calc(9mm * var(--k));
     transform: rotate(-2deg);
   }
 
   .scarcity {
     align-self: flex-start;
     font-family: var(--mono);
-    font-size: calc(9mm * var(--k));
+    font-size: calc(11mm * var(--k));
     line-height: 1;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -603,8 +610,9 @@
   .specs {
     display: flex;
     flex-wrap: wrap;
-    gap: calc(3mm * var(--k)) calc(5mm * var(--k));
-    margin-top: calc(3mm * var(--k));
+    justify-content: flex-end;
+    max-width: 38%;
+    gap: calc(3mm * var(--k)) calc(4mm * var(--k));
     font-family: var(--mono);
     font-size: calc(7.4mm * var(--k));
     line-height: 1;
@@ -619,7 +627,7 @@
   }
 
   .fineprint {
-    margin-top: calc(8mm * var(--k));
+    margin-top: calc(12mm * var(--k));
     padding-top: calc(5mm * var(--k));
     border-top: calc(0.6mm * var(--k)) solid var(--ink-dim);
     display: flex;
@@ -840,24 +848,25 @@
           <div class="headline" contenteditable="true">12&Prime; Round<br>Surface Mount</div>
           <div class="descriptor" contenteditable="true">Edge-lit LED flush mount, 0.95&Prime; slim &mdash; smooth, low-glare light with no plenum space needed. Equivalent to 125W incandescent.</div>
 
-          <div class="pricing">
-            <div class="now"><span class="cur">$</span>14.99</div>
-            <div class="anchor">
+        </div>
+
+        <div class="lower">
+            <div class="deal">
               <div class="was">Was $64.00</div>
+              <div class="pricing">
+                <div class="now"><span class="cur">$</span>14.99</div>
+              </div>
               <div class="flash">76% off</div>
+              <div class="scarcity">While stock lasts</div>
             </div>
-          </div>
-
-          <div class="scarcity">While stock lasts</div>
-
-          <div class="specs">
-            <span>2800 lm</span>
-            <span>25 W</span>
-            <span>4000K</span>
-            <span>Dimmable</span>
-            <span>Wet location</span>
-            <span>5 yr warranty</span>
-          </div>
+            <div class="specs">
+              <span>2800 lm</span>
+              <span>25 W</span>
+              <span>4000K</span>
+              <span>Dimmable</span>
+              <span>Wet location</span>
+              <span>5 yr warranty</span>
+            </div>
         </div>
 
         <div class="fineprint">
