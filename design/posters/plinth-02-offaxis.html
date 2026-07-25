@@ -485,22 +485,23 @@
 
   /* the word that does the work the watermark was not doing */
   .clearance {
-    margin-top: calc(20mm * var(--k));
-    font-size: calc(78mm * var(--k));
-    line-height: 0.9;
+    margin-top: calc(19mm * var(--k));
+    padding: calc(8mm * var(--k)) 0 calc(7mm * var(--k));
+    border-top: calc(1mm * var(--k)) solid var(--accent);
+    border-bottom: calc(2.4mm * var(--k)) solid var(--accent);
+    font-size: calc(84mm * var(--k));
+    line-height: 0.86;
     font-weight: 700;
-    letter-spacing: 0.01em;
+    letter-spacing: -0.005em;
     text-transform: uppercase;
-    color: transparent;
-    -webkit-text-stroke: calc(1.7mm * var(--k)) var(--accent);
+    color: var(--accent);
   }
 
   /* one line, doing one job: say why the light is worth having */
   .hook {
-    margin-top: calc(16mm * var(--k));
     font-family: var(--serif);
-    font-size: calc(23mm * var(--k));
-    line-height: 1.22;
+    font-size: calc(24mm * var(--k));
+    line-height: 1.26;
     color: var(--ink);
   }
 
@@ -512,7 +513,7 @@
   .block {
     display: flex;
     flex-direction: column;
-    gap: calc(6mm * var(--k));
+    gap: calc(10mm * var(--k));
     max-width: 56%;
   }
 
@@ -580,7 +581,7 @@
     align-items: flex-end;
     justify-content: space-between;
     gap: calc(12mm * var(--k));
-    margin-top: calc(9mm * var(--k));
+    margin-top: calc(15mm * var(--k));
   }
 
   .deal {
@@ -868,6 +869,8 @@
         <div class="eyebrow" contenteditable="true">Distinctive Lighting Concepts</div>
 
         <div class="clearance">Clearance</div>
+
+        <div class="spacer"></div>
 
         <p class="hook">Better light for the whole room &mdash;<br><em>at a quarter of the price.</em></p>
 
