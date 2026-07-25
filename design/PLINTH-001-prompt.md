@@ -66,6 +66,31 @@ frosted lens on an off-centre radial gradient with fine grain over it. Drawn
 unlit, so whatever set it is dropped into supplies the light. It is inlined in
 the poster rather than linked, so the poster stays a single portable file.
 
+## Palette
+
+The poster ships on a white ground. Two reasons: heavy black coverage streaks
+on a dry printer and costs ink, and a dark sheet recedes on a bright shop floor
+instead of competing for attention.
+
+Attention is bought with contrast and isolation rather than colour everywhere.
+The sheet is white, the type is near-black, and exactly one element is
+saturated: the brand orange `#f08018` behind the discount flash. A single
+saturated mark in an otherwise neutral field is the thing the eye goes to
+first. Orange also carries value and affordability in retail, and it is the
+company's own colour, so the accent does brand work at the same time.
+
+The price ladder is built for anchoring: the old price sits beside the new one
+with an orange strike, the flash states the percentage rather than the dollar
+saving because the bigger number reads as the bigger deal, and the dollar
+saving is repeated quietly in the fineprint. `While stock lasts` sits directly
+under the price as a scarcity line rather than buried at the foot of the sheet.
+
+Orange is used at two strengths: `--accent` for fills only, and `--accent-ink`
+(a deeper `#a8500a`) for type and rules, since the brand orange on white is too
+low-contrast to read at small sizes.
+
+The original dark set is kept as `body.night` and switches from the toolbar.
+
 ## Sheet sizes
 
 The poster carries its layout in percentages and its type in millimetres

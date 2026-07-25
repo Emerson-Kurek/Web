@@ -5,21 +5,21 @@
     <!-- outer trim: matte white, very slightly cooler and darker toward the bottom -->
     <linearGradient id="lp-bezel" x1="0.38" y1="0" x2="0.6" y2="1">
       <stop offset="0"    stop-color="#ffffff"/>
-      <stop offset="0.42" stop-color="#f7f6f3"/>
-      <stop offset="0.78" stop-color="#eae8e3"/>
-      <stop offset="1"    stop-color="#dedbd5"/>
+      <stop offset="0.42" stop-color="#f5f4f0"/>
+      <stop offset="0.78" stop-color="#e2dfd8"/>
+      <stop offset="1"    stop-color="#cfcbc2"/>
     </linearGradient>
 
     <!-- specular line riding the outer edge of the trim -->
     <linearGradient id="lp-rim" x1="0.2" y1="0" x2="0.8" y2="1">
       <stop offset="0"    stop-color="#ffffff" stop-opacity="0.95"/>
       <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.35"/>
-      <stop offset="1"    stop-color="#b9b5ae" stop-opacity="0.55"/>
+      <stop offset="1"    stop-color="#9d998f" stop-opacity="0.8"/>
     </linearGradient>
 
     <!-- the recess seam: shadowed at the top, catching light along the bottom -->
     <linearGradient id="lp-seam" x1="0.5" y1="0" x2="0.5" y2="1">
-      <stop offset="0"    stop-color="#a8a49d"/>
+      <stop offset="0"    stop-color="#bab6ae"/>
       <stop offset="0.35" stop-color="#cbc7c0"/>
       <stop offset="0.72" stop-color="#f6f5f2"/>
       <stop offset="1"    stop-color="#ffffff"/>
@@ -27,25 +27,25 @@
 
     <!-- frosted lens, unlit: highlight up and left, falling to warm grey at the rim -->
     <radialGradient id="lp-diffuser" cx="0.42" cy="0.34" r="0.78">
-      <stop offset="0"    stop-color="#fdfdfc"/>
-      <stop offset="0.38" stop-color="#f7f6f3"/>
-      <stop offset="0.68" stop-color="#efedE8"/>
-      <stop offset="0.88" stop-color="#e4e1db"/>
-      <stop offset="1"    stop-color="#d8d5ce"/>
+      <stop offset="0"    stop-color="#fdfcf9"/>
+      <stop offset="0.38" stop-color="#f4f1ea"/>
+      <stop offset="0.68" stop-color="#e4e0d5"/>
+      <stop offset="0.88" stop-color="#d2ccbf"/>
+      <stop offset="1"    stop-color="#c0b9aa"/>
     </radialGradient>
 
     <!-- contact shading where the lens drops into the trim -->
     <radialGradient id="lp-lens-vignette" cx="0.5" cy="0.5" r="0.5">
       <stop offset="0"    stop-color="#000000" stop-opacity="0"/>
       <stop offset="0.82" stop-color="#000000" stop-opacity="0"/>
-      <stop offset="0.96" stop-color="#3a3733" stop-opacity="0.10"/>
-      <stop offset="1"    stop-color="#3a3733" stop-opacity="0.18"/>
+      <stop offset="0.94" stop-color="#3a3733" stop-opacity="0.16"/>
+      <stop offset="1"    stop-color="#3a3733" stop-opacity="0.34"/>
     </radialGradient>
 
     <!-- broad soft sheen across the upper left of the lens -->
     <radialGradient id="lp-sheen" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0"   stop-color="#ffffff" stop-opacity="0.55"/>
-      <stop offset="0.6" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="0"   stop-color="#ffffff" stop-opacity="0.26"/>
+      <stop offset="0.6" stop-color="#ffffff" stop-opacity="0.07"/>
       <stop offset="1"   stop-color="#ffffff" stop-opacity="0"/>
     </radialGradient>
 
