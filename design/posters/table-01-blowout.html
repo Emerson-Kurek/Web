@@ -11,28 +11,45 @@
      14 mm side safety · 21 mm head/foot safety
 
      A rebuild of the office-printer sign taped to the display
-     table, in the loud clearance palette: red field, black slab,
-     yellow foot band — the same three bands as FLOOR-001 above
-     it, so the hero and the tables read as one block of colour.
+     table: same offer, set in the PLINTH house language — warm
+     key on white paper, with red keylines carrying the attention,
+     matched to FLOOR-001 above it.
      Letter-native, so every mm is the mm that prints (--k = 1).
      ========================================================== */
 
-  /* ---- PALETTE ---------------------------------------------
-     Matched to FLOOR-001. This sheet is read at arm's length by
-     someone already at the table, so it does not need to carry
-     the room — but it does need to belong to the poster above it.
+  /* ---- LIGHT RIG -------------------------------------------
+     A sheet of paper, not a lit set: no product stands on this
+     one, so the rig is only the wash that makes the paper feel
+     lit from above. Same tokens as PLINTH-002 for consistency.
      ---------------------------------------------------------- */
   :root {
-    --sheet: #d81f06;
-    --sheet-deep: #b01604;
-    --slab: #17181a;
-    --pop: #ffd200;
-    --on-red: #ffffff;
-    --on-red-dim: rgba(255, 255, 255, 0.82);
-    --vignette: 0.2;
-    --grain: 0.07;
+    --key-x: 50%;          /* centred: the sign is a symmetric read */
+    --beam-width: 130%;    /* wide, soft, no visible cone on paper  */
+    --beam-throat: 34%;
+    --beam-height: 72%;
 
+    --ground-top: #ffffff;
+    --ground-bottom: #f2efe9;
+    --key-warmth: 255, 218, 170;
+    --beam-top: 0.13;
+    --beam-mid: 0.04;
+    --haze: 0.05;
+    --pool: 0.14;
+    --vignette: 0.13;
+    --grade: 0.05;
+    --grade-cool: 34, 48, 70;
+    --grade-warm: 255, 214, 150;
+    --grain: 0.09;
+
+    /* ---- TYPE ---- */
+    --ink: #17181a;
+    --ink-dim: rgba(23, 24, 26, 0.56);
+    --accent: #f08018;     /* brand orange — reserved for the logo */
+    --red: #d81f06;        /* the attention colour: keylines and
+                              the figures they enclose             */
+    --red-deep: #b01604;   /* the same red for smaller type        */
     --display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
     --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 
     /* ---- SHEET ---- */
@@ -122,11 +139,59 @@
     height: calc(var(--trim-h) + var(--bleed) * 2);
     overflow: hidden;
     isolation: isolate;
-    background: linear-gradient(to bottom, var(--sheet) 0%, var(--sheet) 62%, var(--sheet-deep) 100%);
+    background:
+      linear-gradient(to bottom, var(--ground-top) 0%, var(--ground-top) 44%, var(--ground-bottom) 100%);
   }
 
   /* ---------- the wash ---------- */
 
+  .beam {
+    position: absolute;
+    top: -1%;
+    left: var(--key-x);
+    width: var(--beam-width);
+    height: var(--beam-height);
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to bottom,
+      rgba(var(--key-warmth), var(--beam-top)),
+      rgba(var(--key-warmth), var(--beam-mid)) 62%,
+      rgba(var(--key-warmth), 0) 96%
+    );
+    clip-path: polygon(
+      calc(50% - var(--beam-throat) / 2) 0,
+      calc(50% + var(--beam-throat) / 2) 0,
+      100% 100%,
+      0 100%
+    );
+    filter: blur(calc(9mm * var(--k)));
+    mask-image: linear-gradient(to right, transparent 0%, #000 36%, #000 64%, transparent 100%);
+  }
+
+  .haze {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 54%;
+    background: radial-gradient(
+      86% 118% at var(--key-x) 104%,
+      rgba(var(--key-warmth), var(--haze)),
+      rgba(var(--key-warmth), calc(var(--haze) * 0.32)) 46%,
+      rgba(var(--key-warmth), 0) 76%
+    );
+  }
+
+  .pool {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 30%;
+    background: radial-gradient(
+      95% 150% at var(--key-x) 118%,
+      rgba(var(--key-warmth), var(--pool)),
+      rgba(var(--key-warmth), 0) 62%
+    );
+  }
+
+  /* corner falloff — gives a flat sheet some depth */
   .vignette {
     position: absolute;
     inset: 0;
@@ -137,6 +202,21 @@
       rgba(0, 0, 0, 0) 42%,
       rgba(0, 0, 0, calc(var(--vignette) * 0.5)) 78%,
       rgba(0, 0, 0, var(--vignette)) 100%
+    );
+  }
+
+  /* grade: shadows cool off, the key stays warm */
+  .grade {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      rgba(var(--grade-cool), var(--grade)) 0%,
+      rgba(var(--grade-cool), calc(var(--grade) * 0.45)) 44%,
+      rgba(var(--grade-warm), calc(var(--grade) * 0.55)) 76%,
+      rgba(var(--grade-cool), calc(var(--grade) * 0.30)) 100%
     );
   }
 
@@ -153,16 +233,26 @@
 
   body.no-grain .grain { display: none; }
 
+  /* the same red keyline as FLOOR-001, so the sign on the table
+     and the poster above it read as one piece of signage */
+  .keyline {
+    position: absolute;
+    inset: calc(var(--bleed) + 8mm * var(--k));
+    z-index: 3;
+    pointer-events: none;
+    border: calc(1.1mm * var(--k)) solid var(--red);
+  }
+
   /* ---------- copy ---------- */
 
   .copy {
     position: absolute;
     inset: var(--bleed);
     z-index: 3;
-    padding: var(--safety-y) var(--safety);
+    padding: calc(var(--safety-y) + 3mm * var(--k)) calc(var(--safety) + 3mm * var(--k));
     display: flex;
     flex-direction: column;
-    color: var(--on-red);
+    color: var(--ink);
   }
 
   .spacer { flex: 1; }
@@ -175,12 +265,13 @@
     text-transform: uppercase;
   }
 
-  /* the stopper: a solid block of the brand colour, knockout type */
+  /* the stopper: a red rule box, white inside, so the words stay
+     clean and the outline does the attention work */
   .banner {
     container-type: inline-size;
     margin-top: calc(5mm * var(--k));
-    background: var(--slab);
-    padding: calc(5mm * var(--k)) calc(6mm * var(--k)) calc(6mm * var(--k));
+    border: calc(1.6mm * var(--k)) solid var(--red);
+    padding: calc(4mm * var(--k)) calc(5mm * var(--k)) calc(5mm * var(--k));
     display: flex;
     flex-direction: column;
     gap: calc(3mm * var(--k));
@@ -193,7 +284,7 @@
     font-weight: 700;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--on-red);
+    color: var(--red-deep);
   }
 
   /* two lines: "BLOW OUT" holds one measure, SALE holds the next.
@@ -207,7 +298,7 @@
     font-weight: 700;
     letter-spacing: -0.02em;
     text-transform: uppercase;
-    color: var(--pop);
+    color: var(--red);
   }
 
   /* four letters against eight: SALE is tracked out until it
@@ -224,17 +315,15 @@
      slack all collects in the open field under the banner. */
   .hook {
     margin: 0 0 calc(4mm * var(--k));
-    font-size: calc(10mm * var(--k));
-    line-height: 1.1;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
-    color: var(--on-red);
+    font-family: var(--serif);
+    font-size: calc(9mm * var(--k));
+    line-height: 1.24;
+    color: var(--ink);
   }
 
   .hook em {
     font-style: normal;
-    color: var(--pop);
+    color: var(--red-deep);
   }
 
   /* ---- the price: the reason the sign exists ---- */
@@ -253,7 +342,7 @@
     line-height: 0.82;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.05em;
-    color: var(--pop);
+    color: var(--red);
   }
 
   .now .cur {
@@ -263,51 +352,42 @@
     margin-right: 0.06em;
   }
 
-  /* the yellow foot, same device as FLOOR-001: it runs to the
-     sheet edge so the sign has a banded silhouette rather than a
-     border, and yellow is what survives longest at a glance */
-  .footband {
-    margin: calc(7mm * var(--k)) calc(-1 * var(--safety)) calc(-1 * var(--safety-y));
-    background: var(--pop);
-    color: var(--slab);
-    padding: calc(6mm * var(--k)) var(--safety) calc(5mm * var(--k));
-    display: flex;
-    flex-direction: column;
-    gap: calc(4mm * var(--k));
-  }
-
   .deal {
     display: flex;
-    align-items: center;
-    gap: calc(5mm * var(--k));
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(4mm * var(--k));
+    margin-top: calc(6mm * var(--k));
   }
 
   .flash {
     font-family: var(--display);
-    font-size: calc(11mm * var(--k));
+    font-size: calc(10mm * var(--k));
     line-height: 1;
     font-weight: 700;
     letter-spacing: 0.02em;
     text-transform: uppercase;
-    color: var(--pop);
-    background: var(--slab);
-    padding: calc(3mm * var(--k)) calc(4mm * var(--k));
-    transform: rotate(-2deg);
+    color: var(--red);
+    border: calc(1.2mm * var(--k)) solid var(--red);
+    padding: calc(2.5mm * var(--k)) calc(3.5mm * var(--k));
   }
 
   .scarcity {
+    align-self: flex-start;
     font-family: var(--mono);
-    font-size: calc(5mm * var(--k));
+    font-size: calc(4.6mm * var(--k));
     line-height: 1;
-    font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--slab);
+    color: var(--red-deep);
+    border-top: calc(0.7mm * var(--k)) solid var(--red);
+    padding-top: calc(3mm * var(--k));
   }
 
   .fineprint {
-    padding-top: calc(3mm * var(--k));
-    border-top: calc(0.4mm * var(--k)) solid rgba(23, 24, 26, 0.45);
+    margin-top: calc(7mm * var(--k));
+    padding-top: calc(4mm * var(--k));
+    border-top: calc(0.4mm * var(--k)) solid var(--ink-dim);
     display: flex;
     justify-content: space-between;
     gap: calc(8mm * var(--k));
@@ -316,7 +396,7 @@
     line-height: 1;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(23, 24, 26, 0.7);
+    color: var(--ink-dim);
   }
 
   /* fields the floor staff change between tables */
@@ -389,8 +469,13 @@
   <div class="scaler">
     <div class="sheet">
 
+      <div class="beam"></div>
+      <div class="haze"></div>
+      <div class="pool"></div>
       <div class="vignette"></div>
+      <div class="grade"></div>
       <div class="grain"></div>
+      <div class="keyline"></div>
 
       <div class="copy">
         <div class="eyebrow" contenteditable="true">Distinctive Lighting Concepts</div>
@@ -408,16 +493,14 @@
           <div class="now"><span class="cur">$</span><span contenteditable="true">25.00</span></div>
         </div>
 
-        <div class="footband">
-          <div class="deal">
-            <div class="flash" contenteditable="true">One price</div>
-            <div class="scarcity" contenteditable="true">While stock lasts</div>
-          </div>
+        <div class="deal">
+          <div class="flash" contenteditable="true">One price</div>
+          <div class="scarcity">While stock lasts</div>
+        </div>
 
-          <div class="fineprint">
-            <span contenteditable="true">In-store only</span>
-            <span contenteditable="true">Table 1</span>
-          </div>
+        <div class="fineprint">
+          <span contenteditable="true">In-store only</span>
+          <span contenteditable="true">Table 1</span>
         </div>
       </div>
 

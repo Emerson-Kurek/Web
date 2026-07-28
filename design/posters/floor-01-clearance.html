@@ -17,31 +17,40 @@
      ========================================================== */
 
   :root {
-    /* ---- PALETTE -------------------------------------------
-       Attention first. The sheet is a saturated field edge to
-       edge, because mass is what registers in peripheral vision
-       — a shopper glancing across the floor resolves colour and
-       shape long before any letterform.
+    /* ---- LIGHT RIG ---------------------------------------
+       A lit sheet, not a lit set. No product stands on this
+       poster, so the rig is only the warm wash that keeps it in
+       the same world as the PLINTH posters.
+       -------------------------------------------------------- */
+    --key-x: 50%;
+    --beam-width: 132%;
+    --beam-throat: 36%;
+    --beam-height: 70%;
+    --key-warmth: 255, 218, 170;
+    --ground-top: #ffffff;
+    --ground-bottom: #f2efe9;
+    --beam-top: 0.13;
+    --beam-mid: 0.04;
+    --haze: 0.05;
+    --pool: 0.14;
+    --vignette: 0.13;
+    --grade: 0.05;
+    --grade-cool: 34, 48, 70;
+    --grade-warm: 255, 214, 150;
+    --grain: 0.09;
 
-       The long-distance work is done by a contrast STACK, not by
-       the red alone: a black slab on red, and yellow inside the
-       slab. Two extreme steps on top of each other give the sheet
-       a silhouette that plain red signage does not have.
-       ---------------------------------------------------------- */
-    --sheet: #d81f06;      /* saturated scarlet, full bleed        */
-    --sheet-deep: #b01604;  /* foot of the sheet, for depth        */
-    --slab: #17181a;       /* the number's block                   */
-    --pop: #ffd200;        /* the anchor and the price — 14:1 on
-                              the slab, and the highest-luminance
-                              mark on the sheet                    */
-    --on-red: #ffffff;     /* secondary type, ~4.9:1 on the red    */
-    --on-red-dim: rgba(255, 255, 255, 0.82);
-    --accent: #f08018;     /* brand orange — logo roundel, rules   */
+    /* ---- INK ---- */
+    --ink: #17181a;
+    --ink-dim: rgba(23, 24, 26, 0.56);
+    --accent: #f08018;     /* brand orange — the logo roundel only */
+    --red: #d81f06;        /* the attention colour: keylines and
+                              the figures they enclose             */
+    --red-deep: #b01604;   /* the same red for smaller type, where
+                              #d81f06 on white is too light        */
     --badge: #0d0d0e;      /* the logo's own ground                */
-    --vignette: 0.22;      /* corner falloff, keeps the field alive*/
-    --grain: 0.07;
 
     --display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
     --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 
     /* ---- SHEET ---- */
@@ -141,7 +150,56 @@
     height: calc(var(--trim-h) + var(--bleed) * 2);
     overflow: hidden;
     isolation: isolate;
-    background: linear-gradient(to bottom, var(--sheet) 0%, var(--sheet) 62%, var(--sheet-deep) 100%);
+    background:
+      linear-gradient(to bottom, var(--ground-top) 0%, var(--ground-top) 44%, var(--ground-bottom) 100%);
+  }
+
+  /* ---------- the wash ---------- */
+
+  .beam {
+    position: absolute;
+    top: -1%;
+    left: var(--key-x);
+    width: var(--beam-width);
+    height: var(--beam-height);
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to bottom,
+      rgba(var(--key-warmth), var(--beam-top)),
+      rgba(var(--key-warmth), var(--beam-mid)) 62%,
+      rgba(var(--key-warmth), 0) 96%
+    );
+    clip-path: polygon(
+      calc(50% - var(--beam-throat) / 2) 0,
+      calc(50% + var(--beam-throat) / 2) 0,
+      100% 100%,
+      0 100%
+    );
+    filter: blur(calc(24mm * var(--k)));
+    mask-image: linear-gradient(to right, transparent 0%, #000 36%, #000 64%, transparent 100%);
+  }
+
+  .haze {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 54%;
+    background: radial-gradient(
+      86% 118% at var(--key-x) 104%,
+      rgba(var(--key-warmth), var(--haze)),
+      rgba(var(--key-warmth), calc(var(--haze) * 0.32)) 46%,
+      rgba(var(--key-warmth), 0) 76%
+    );
+  }
+
+  .pool {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 30%;
+    background: radial-gradient(
+      95% 150% at var(--key-x) 118%,
+      rgba(var(--key-warmth), var(--pool)),
+      rgba(var(--key-warmth), 0) 62%
+    );
   }
 
   .vignette {
@@ -150,10 +208,24 @@
     z-index: 2;
     pointer-events: none;
     background: radial-gradient(
-      116% 86% at 50% 42%,
-      rgba(0, 0, 0, 0) 46%,
-      rgba(0, 0, 0, calc(var(--vignette) * 0.45)) 78%,
+      118% 88% at 50% 46%,
+      rgba(0, 0, 0, 0) 42%,
+      rgba(0, 0, 0, calc(var(--vignette) * 0.5)) 78%,
       rgba(0, 0, 0, var(--vignette)) 100%
+    );
+  }
+
+  .grade {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      rgba(var(--grade-cool), var(--grade)) 0%,
+      rgba(var(--grade-cool), calc(var(--grade) * 0.45)) 44%,
+      rgba(var(--grade-warm), calc(var(--grade) * 0.55)) 76%,
+      rgba(var(--grade-cool), calc(var(--grade) * 0.30)) 100%
     );
   }
 
@@ -170,16 +242,27 @@
 
   body.no-grain .grain { display: none; }
 
+  /* A single red keyline just inside the trim. It frames the
+     sheet as one object from across the floor, and on a white
+     ground an outline costs almost no ink to do it. */
+  .keyline {
+    position: absolute;
+    inset: calc(var(--bleed) + 9mm * var(--k));
+    z-index: 3;
+    pointer-events: none;
+    border: calc(1.4mm * var(--k)) solid var(--red);
+  }
+
   /* ---------- copy ---------- */
 
   .copy {
     position: absolute;
     inset: var(--bleed);
     z-index: 3;
-    padding: var(--safety-y) var(--safety);
+    padding: calc(var(--safety-y) + 4mm * var(--k)) calc(var(--safety) + 4mm * var(--k));
     display: flex;
     flex-direction: column;
-    color: var(--on-red);
+    color: var(--ink);
   }
 
   .spacer { flex: 1; }
@@ -229,34 +312,34 @@
     font-weight: 700;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--pop);
+    color: var(--red-deep);
   }
 
   .masthead-sub {
+    font-family: var(--serif);
     font-size: calc(10mm * var(--k));
     line-height: 1.2;
-    color: var(--on-red-dim);
+    color: var(--ink-dim);
   }
 
   .hairline {
-    height: calc(1.2mm * var(--k));
-    background: var(--on-red);
+    height: calc(0.8mm * var(--k));
+    background: var(--red);
     margin-top: calc(10mm * var(--k));
   }
 
   /* ---- the stopper ---------------------------------------
-     A black slab on a red field, with the number in yellow
-     inside it. The red is seen first as pure mass; the slab
-     gives that mass an edge; the yellow is the brightest mark
-     on the sheet. Three steps, largest to smallest, which is
-     the order a shopper's eye resolves them in.
+     A red rule box around the number. The outline does the
+     attention work and the white inside keeps the figure clean
+     — a solid block would shout louder but print heavier and
+     read cheaper.
      -------------------------------------------------------- */
 
   .banner {
     container-type: inline-size;
     margin-top: calc(12mm * var(--k));
-    background: var(--slab);
-    padding: calc(9mm * var(--k)) calc(14mm * var(--k)) calc(11mm * var(--k));
+    border: calc(2.6mm * var(--k)) solid var(--red);
+    padding: calc(7mm * var(--k)) calc(11mm * var(--k)) calc(9mm * var(--k));
   }
 
   .banner-kicker {
@@ -266,7 +349,7 @@
     font-weight: 700;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--on-red);
+    color: var(--red-deep);
   }
 
   /* the anchor: the largest number on the sheet, sized off the
@@ -282,11 +365,12 @@
     line-height: 0.86;
     font-weight: 700;
     letter-spacing: -0.045em;
-    color: var(--pop);
+    color: var(--red);
   }
 
   .anchor .pct { font-size: 0.52em; letter-spacing: -0.02em; }
   .anchor .off {
+    color: var(--red);
     font-size: 0.3em;
     letter-spacing: 0.02em;
     text-transform: uppercase;
@@ -295,75 +379,55 @@
 
   /* ---- what it applies to ---- */
 
-  /* sans, not serif: at 8 m the serif's thin strokes are the
-     first thing to disappear */
   .hook {
-    margin: calc(11mm * var(--k)) 0 0;
-    font-size: calc(38mm * var(--k));
-    line-height: 1.0;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-    color: var(--on-red);
-    max-width: 18ch;
+    margin: calc(13mm * var(--k)) 0 0;
+    font-family: var(--serif);
+    font-size: calc(27mm * var(--k));
+    line-height: 1.22;
+    color: var(--ink);
+    max-width: 20ch;
   }
 
   .hook em {
     font-style: normal;
-    color: var(--pop);
+    color: var(--red-deep);
   }
 
-  /* ---- the foot band -------------------------------------
-     The bottom third goes solid yellow, edge to edge, breaking
-     out of the type safety and into the bleed.
+  /* ---- the instruction: the poster hangs above the tables,
+     so it points at them ---- */
 
-     Two reasons. Yellow is the highest-luminance mark available,
-     so it is what survives longest as a shopper's attention falls
-     off toward the periphery. And it gives the sheet a banded
-     silhouette — red, black, red, yellow — which is identifiable
-     as a shape at a distance where no letterform resolves at all.
-     -------------------------------------------------------- */
-
-  .footband {
-    margin: 0 calc(-1 * (var(--safety) + var(--bleed)))
-              calc(-1 * (var(--safety-y) + var(--bleed)));
-    background: var(--pop);
-    color: var(--slab);
-    padding: calc(11mm * var(--k)) var(--safety) calc(7mm * var(--k));
-    display: flex;
-    flex-direction: column;
-    gap: calc(8mm * var(--k));
-  }
-
-  /* the poster hangs above the tables, so it points at them */
   .direct {
     display: flex;
     align-items: center;
     gap: calc(9mm * var(--k));
+    margin-top: calc(10mm * var(--k));
   }
 
   .arrow {
     flex: none;
     width: calc(42mm * var(--k));
     height: calc(42mm * var(--k));
-    fill: var(--slab);
+    fill: var(--red);
     display: block;
   }
 
   .direct-text {
     font-size: calc(26mm * var(--k));
-    line-height: 1.04;
+    line-height: 1.06;
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     text-transform: uppercase;
   }
 
-  /* the entry price: a black slab inside the yellow, mirroring
-     the anchor slab above so the two read as one system */
+  /* ---- the entry price: the cheapest true number on the
+     floor, so the anchor above has something concrete under it ---- */
+
   .deal {
     display: flex;
-    align-items: center;
-    gap: calc(9mm * var(--k));
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(6mm * var(--k));
+    margin-top: calc(12mm * var(--k));
   }
 
   .flash {
@@ -372,20 +436,21 @@
     font-weight: 700;
     letter-spacing: 0.01em;
     text-transform: uppercase;
-    color: var(--pop);
-    background: var(--slab);
+    color: var(--red);
+    border: calc(2mm * var(--k)) solid var(--red);
     padding: calc(5mm * var(--k)) calc(8mm * var(--k));
-    transform: rotate(-2deg);
   }
 
   .scarcity {
     font-family: var(--mono);
-    font-size: calc(13mm * var(--k));
-    line-height: 1.1;
+    font-size: calc(15mm * var(--k));
+    line-height: 1;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--slab);
+    color: var(--red-deep);
+    border-top: calc(1mm * var(--k)) solid var(--red);
+    padding-top: calc(5mm * var(--k));
   }
 
   /* Why buy it here rather than cheaper online. A discount alone
@@ -401,20 +466,21 @@
 
   .creds span {
     flex: 1;
-    border-top: calc(0.8mm * var(--k)) solid var(--on-red-dim);
-    padding-top: calc(4mm * var(--k));
+    border-top: calc(1mm * var(--k)) solid var(--red);
+    padding-top: calc(5mm * var(--k));
     font-family: var(--mono);
-    font-size: calc(7.5mm * var(--k));
+    font-size: calc(9mm * var(--k));
     line-height: 1.24;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     text-wrap: balance;
-    color: var(--on-red-dim);
+    color: var(--ink);
   }
 
   .fineprint {
-    padding-top: calc(4mm * var(--k));
-    border-top: calc(0.5mm * var(--k)) solid rgba(23, 24, 26, 0.45);
+    margin-top: calc(11mm * var(--k));
+    padding-top: calc(5mm * var(--k));
+    border-top: calc(0.6mm * var(--k)) solid var(--ink-dim);
     display: flex;
     justify-content: space-between;
     gap: calc(10mm * var(--k));
@@ -423,7 +489,7 @@
     line-height: 1;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(23, 24, 26, 0.7);
+    color: var(--ink-dim);
   }
 
   /* fields the store changes per event */
@@ -496,7 +562,7 @@
 <body>
 
 <div class="chrome">
-  <span class="chrome-id">FLOOR-001 · Store-wide clearance · <b>Up to 70% off</b> · red</span>
+  <span class="chrome-id">FLOOR-001 · Store-wide clearance · <b>Up to 70% off</b></span>
   <button type="button" id="btn-guides" aria-pressed="false">Print guides</button>
   <button type="button" id="btn-size" aria-pressed="false">Sheet: A1</button>
   <button type="button" id="btn-grain" aria-pressed="true">Grain: on</button>
@@ -507,8 +573,13 @@
   <div class="scaler">
     <div class="sheet">
 
+      <div class="beam"></div>
+      <div class="haze"></div>
+      <div class="pool"></div>
       <div class="vignette"></div>
+      <div class="grade"></div>
       <div class="grain"></div>
+      <div class="keyline"></div>
 
       <div class="copy">
 
@@ -531,7 +602,7 @@
 
         <div class="spacer"></div>
 
-        <p class="hook">The whole showroom<br><em>is reduced</em></p>
+        <p class="hook">The whole showroom is reduced &mdash;<br><em>lit, in stock, today.</em></p>
 
         <div class="creds">
           <span contenteditable="true">Lit and on display</span>
@@ -541,23 +612,21 @@
 
         <div class="spacer"></div>
 
-        <div class="footband">
-          <div class="direct">
-            <svg class="arrow" viewBox="0 0 100 100" aria-hidden="true">
-              <path d="M50 96 L8 46 h26 V4 h32 v42 h26 Z"/>
-            </svg>
-            <div class="direct-text" contenteditable="true">Everything on<br>these tables</div>
-          </div>
+        <div class="direct">
+          <svg class="arrow" viewBox="0 0 100 100" aria-hidden="true">
+            <path d="M50 96 L8 46 h26 V4 h32 v42 h26 Z"/>
+          </svg>
+          <div class="direct-text" contenteditable="true">Everything on<br>these tables</div>
+        </div>
 
-          <div class="deal">
-            <div class="flash" contenteditable="true">From $25</div>
-            <div class="scarcity" contenteditable="true">When it&rsquo;s gone,<br>it&rsquo;s gone</div>
-          </div>
+        <div class="deal">
+          <div class="flash" contenteditable="true">From $25</div>
+          <div class="scarcity" contenteditable="true">When it&rsquo;s gone, it&rsquo;s gone</div>
+        </div>
 
-          <div class="fineprint">
-            <span contenteditable="true">In-store only</span>
-            <span contenteditable="true">While stock lasts</span>
-          </div>
+        <div class="fineprint">
+          <span contenteditable="true">In-store only</span>
+          <span contenteditable="true">While stock lasts</span>
         </div>
       </div>
 

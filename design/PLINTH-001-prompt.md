@@ -106,12 +106,6 @@ Orange is used at two strengths: `--accent` for fills only, and `--accent-ink`
 (a deeper `#a8500a`) for type and rules, since the brand orange on white is too
 low-contrast to read at small sizes.
 
-The clearance set (FLOOR-001, TABLE-001) deliberately departs from the white
-ground above and runs a full-bleed red field instead. The reasoning for the
-split is in `FLOOR-001-prompt.md` under "Palette": this rule is written for a
-product poster selling one fixture, and a clearance hero read from across the
-floor has a different job. The rule stands for the PLINTH directions.
-
 The original dark set is kept as `body.night` and switches from the toolbar.
 
 ## Sheet sizes
