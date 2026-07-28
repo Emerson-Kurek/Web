@@ -326,12 +326,13 @@
 <div class="panel">
   <div class="panel-head">
     <h1>Design</h1>
-    <p>Change anything by hand, or type an instruction into the box in each section. Edits save automatically. You can also tap text on the sign and type into it.</p>
+    <p>Change anything by hand, or type an instruction into the box in each section. Edits save automatically. You can also tap text on the sign and type into it. Saving gives you an image — print it from Photos.</p>
     <div class="btnrow">
       <button class="primary" id="print">Print / PDF</button>
       <button id="wording">Plain wording</button>
       <button id="reset">Reset all</button>
     </div>
+    <div class="ask-out" id="printout"></div>
   </div>
 
   <div id="controls"></div>
@@ -1112,6 +1113,199 @@
   }
 
   /* =====================================================================
+     SAVE AS AN IMAGE
+
+     window.print() is blocked inside the sandboxed frame this page runs
+     in on claude.ai, so on a phone the print button did nothing. A PNG
+     is the only print-friendly format the runtime will hand over, and it
+     is the right one anyway: it lands in Photos and AirPrints from the
+     share sheet at the sheet's true size.
+
+     Layout is taken from the live DOM and the canvas only rasterizes, so
+     the image cannot drift away from the preview.
+     ===================================================================== */
+
+  var DPI = 300;
+
+  function pxPerMM() { return DPI / 25.4; }
+
+  function svgToURL(node) {
+    var clone = node.cloneNode(true);
+    clone.setAttribute("xmlns", SVGNS);
+    return "data:image/svg+xml;charset=utf-8," +
+      encodeURIComponent(new XMLSerializer().serializeToString(clone));
+  }
+
+  function loadImage(url) {
+    return new Promise(function (res, rej) {
+      var img = new Image();
+      img.onload = function () { res(img); };
+      img.onerror = function () { rej(new Error("svg load failed")); };
+      img.src = url;
+    });
+  }
+
+  function renderPNG() {
+    var s = state.sheet;
+    var dims = SIZES[s.size] || SIZES.letter;
+    var scale = pxPerMM();
+
+    var cv = document.createElement("canvas");
+    cv.width = Math.round(dims[0] * scale);
+    cv.height = Math.round(dims[1] * scale);
+    var ctx = cv.getContext("2d");
+
+    var sheetRect = sheetEl.getBoundingClientRect();
+
+    // Two different units are needed, and mixing them up scales the type
+    // wrongly. getBoundingClientRect includes the preview's CSS transform;
+    // getComputedStyle does not. So measured rects convert with `unit`,
+    // and anything read off a computed style converts with `unitCSS`.
+    var unit = cv.width / sheetRect.width;
+    var unitCSS = cv.width / sheetEl.offsetWidth;
+
+    function X(clientX) { return (clientX - sheetRect.left) * unit; }
+    function Y(clientY) { return (clientY - sheetRect.top) * unit; }
+    function L(px) { return px * unit; }
+    function MMU(mm) { return mm * scale; }
+
+    ctx.fillStyle = s.paper;
+    ctx.fillRect(0, 0, cv.width, cv.height);
+
+    // ---- the border round the sheet ----
+    if (s.frameOn) {
+      var inset = MMU(s.frameInset);
+      var w = MMU(s.frameWidth);
+      ctx.strokeStyle = s.frameColor;
+      ctx.lineWidth = w;
+      ctx.strokeRect(inset + w / 2, inset + w / 2,
+                     cv.width - inset * 2 - w, cv.height - inset * 2 - w);
+      if (s.frameDouble) {
+        var i2 = inset + w * 2.2;
+        var w2 = w * 0.4;
+        ctx.lineWidth = w2;
+        ctx.strokeRect(i2 + w2 / 2, i2 + w2 / 2,
+                       cv.width - i2 * 2 - w2, cv.height - i2 * 2 - w2);
+      }
+    }
+
+    // ---- everything positioned from the DOM ----
+    var jobs = [];
+
+    // SVG bits: the graphic behind a line, rules above, side marks, corners
+    Array.prototype.forEach.call(
+      sheetEl.querySelectorAll(".gfx svg, .divline svg, .flank svg, .corner svg"),
+      function (node) {
+        var r = node.getBoundingClientRect();
+        var url = svgToURL(node);
+        jobs.push(loadImage(url).then(function (img) {
+          ctx.drawImage(img, X(r.left), Y(r.top), L(r.width), L(r.height));
+        }).catch(function () { /* a graphic that will not load is skipped */ }));
+      }
+    );
+
+    return Promise.all(jobs).then(function () {
+      // text last, so it sits over its graphic exactly as on screen
+      Array.prototype.forEach.call(sheetEl.querySelectorAll(".el"), function (el) {
+        var cs = getComputedStyle(el);
+        var box = el.getBoundingClientRect();
+
+        // highlight and border box behind the words
+        if (cs.backgroundColor && cs.backgroundColor !== "rgba(0, 0, 0, 0)") {
+          ctx.fillStyle = cs.backgroundColor;
+          ctx.fillRect(X(box.left), Y(box.top), L(box.width), L(box.height));
+        }
+        var bw = (parseFloat(cs.borderTopWidth) || 0) * unitCSS;
+        if (bw > 0) {
+          ctx.strokeStyle = cs.borderTopColor;
+          ctx.lineWidth = bw;
+          ctx.strokeRect(X(box.left) + bw / 2, Y(box.top) + bw / 2,
+                         L(box.width) - bw, L(box.height) - bw);
+        }
+
+        var fontPx = parseFloat(cs.fontSize) * unitCSS;
+        ctx.font = cs.fontStyle + " " + cs.fontWeight + " " + fontPx + "px " + cs.fontFamily;
+        ctx.fillStyle = cs.color;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+
+        var track = parseFloat(cs.letterSpacing);
+        if (isNaN(track)) track = 0;
+        var canTrack = ("letterSpacing" in ctx);
+        if (canTrack) ctx.letterSpacing = (track * unitCSS) + "px";
+
+        var upper = cs.textTransform === "uppercase";
+
+        // one draw per visual line, using the boxes the browser produced —
+        // this is what makes multi-line text and wrapping come out right
+        eachLine(el, function (text, rect) {
+          var str = upper ? text.toUpperCase() : text;
+          var m = ctx.measureText(str);
+          var asc = m.actualBoundingBoxAscent;
+          if (!asc || !isFinite(asc)) asc = fontPx * 0.72;
+          var baseline = Y(rect.top) + (L(rect.height) - (asc + (m.actualBoundingBoxDescent || 0))) / 2 + asc;
+
+          if (canTrack) {
+            ctx.fillText(str, X(rect.left), baseline);
+          } else {
+            var x = X(rect.left);
+            for (var i = 0; i < str.length; i++) {
+              ctx.fillText(str[i], x, baseline);
+              x += ctx.measureText(str[i]).width + track * unitCSS;
+            }
+          }
+        });
+
+        if (canTrack) ctx.letterSpacing = "0px";
+      });
+
+      return cv;
+    });
+  }
+
+  /* Hand back each visual line of a text element together with the box
+     the browser laid it out in.
+
+     Done by grouping characters that share a line box: the text is a few
+     dozen characters, so this is cheap, and it is exact for both the \n
+     breaks and any wrapping the browser decided on by itself. */
+  function eachLine(el, fn) {
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    var node, lines = [];
+
+    while ((node = walker.nextNode())) {
+      var text = node.nodeValue;
+      var cur = null;
+
+      for (var i = 0; i < text.length; i++) {
+        if (text[i] === "\n") { cur = null; continue; }
+
+        var r = document.createRange();
+        r.setStart(node, i);
+        r.setEnd(node, i + 1);
+        var rect = r.getBoundingClientRect();
+        if (!rect.width && !rect.height) continue;
+
+        if (cur && Math.abs(rect.top - cur.rect.top) < 1) {
+          cur.text += text[i];
+          cur.rect = {
+            top: cur.rect.top,
+            left: Math.min(cur.rect.left, rect.left),
+            height: Math.max(cur.rect.height, rect.height),
+            width: Math.max(cur.rect.left + cur.rect.width, rect.left + rect.width) -
+                   Math.min(cur.rect.left, rect.left)
+          };
+        } else {
+          cur = { text: text[i], rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height } };
+          lines.push(cur);
+        }
+      }
+    }
+
+    lines.forEach(function (l) { fn(l.text, l.rect); });
+  }
+
+  /* =====================================================================
      PANEL
      ===================================================================== */
 
@@ -1364,13 +1558,62 @@
 
   /* ===================================================================== */
 
-  document.getElementById("print").addEventListener("click", function () {
-    var dims = SIZES[state.sheet.size] || SIZES.letter;
-    var st = document.getElementById("pagesize") || document.createElement("style");
-    st.id = "pagesize";
-    st.textContent = "@page { size: " + dims[0] + "mm " + dims[1] + "mm; margin: 0; }";
-    document.head.appendChild(st);
-    window.print();
+  var printBtn = document.getElementById("print");
+  var printOut = document.getElementById("printout");
+
+  // window.print() is blocked in the sandboxed frame the published page
+  // runs in, so it is only offered when the file is opened directly
+  var hosted = !!(window.claude && window.claude.downloads);
+
+  printBtn.textContent = hosted ? "Save image to print" : "Print / PDF";
+
+  function say(msg, bad) {
+    printOut.className = "ask-out" + (bad ? " miss" : "");
+    printOut.textContent = msg;
+  }
+
+  function fileName() {
+    var t = (state.lines.filter(function (l) { return l.key === "price"; })[0] || {}).text || "sign";
+    return ("blow out sale " + t)
+      .replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() + ".png";
+  }
+
+  printBtn.addEventListener("click", function () {
+    if (!hosted) {
+      var dims = SIZES[state.sheet.size] || SIZES.letter;
+      var st = document.getElementById("pagesize") || document.createElement("style");
+      st.id = "pagesize";
+      st.textContent = "@page { size: " + dims[0] + "mm " + dims[1] + "mm; margin: 0; }";
+      document.head.appendChild(st);
+      window.print();
+      return;
+    }
+
+    say("Making the image…");
+    printBtn.disabled = true;
+
+    renderPNG().then(function (cv) {
+      return new Promise(function (res, rej) {
+        cv.toBlob(function (b) { b ? res(b) : rej(new Error("encode failed")); }, "image/png");
+      });
+    }).then(function (blob) {
+      return window.claude.downloads.save({ filename: fileName(), data: blob });
+    }).then(function () {
+      say("Saved. Open it in Photos or Files, then Share → Print.");
+    }).catch(function (err) {
+      var code = err && err.code;
+      if (code === "declined") {
+        say("Not saved — tap the button again if you change your mind.", true);
+      } else if (code === "rate_limited") {
+        say("Too many saves at once. Wait a moment, then try again.", true);
+      } else if (code === "too_large") {
+        say("That image is too big to save. Try a smaller paper size.", true);
+      } else {
+        say("Could not save the image here. Open this page in a browser and use Print instead.", true);
+      }
+    }).then(function () {
+      printBtn.disabled = false;
+    });
   });
 
   document.getElementById("wording").addEventListener("click", function () {
