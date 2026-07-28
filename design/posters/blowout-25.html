@@ -19,13 +19,13 @@
   /* ============ DESIGN PANEL ============ */
 
   .panel {
-    width: 340px;
+    width: 360px;
     flex: none;
     background: #16181c;
     border-right: 1px solid #2e3238;
     height: 100vh;
     overflow-y: auto;
-    padding: 0 0 40px;
+    padding: 0 0 60px;
   }
 
   .panel-head {
@@ -63,12 +63,11 @@
   }
 
   button:hover { border-color: #6f7681; }
+  button:focus-visible { outline: 2px solid #2f6fdd; outline-offset: 2px; }
   button.primary { background: #2f6fdd; border-color: #2f6fdd; }
   button.primary:hover { background: #3d7cea; }
 
-  details {
-    border-bottom: 1px solid #24272c;
-  }
+  details { border-bottom: 1px solid #24272c; }
 
   summary {
     padding: 11px 18px;
@@ -87,7 +86,52 @@
   details[open] summary::after { content: "\2212"; }
   summary:hover { background: #1c1f24; }
 
-  .group { padding: 4px 18px 16px; }
+  .group { padding: 4px 18px 18px; }
+
+  /* ---- the instruction box ---- */
+
+  .ask {
+    background: #1b1f26;
+    border: 1px solid #2b323c;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 14px;
+  }
+
+  .ask-label {
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #7f8794;
+    margin-bottom: 7px;
+  }
+
+  .ask-row { display: flex; gap: 7px; }
+
+  .ask input {
+    flex: 1;
+    min-width: 0;
+    font: inherit;
+    font-size: 12px;
+    color: #e8e6e1;
+    background: #0f1114;
+    border: 1px solid #33383f;
+    border-radius: 4px;
+    padding: 7px 9px;
+  }
+
+  .ask input:focus { outline: none; border-color: #2f6fdd; }
+  .ask button { flex: none; }
+
+  .ask-out {
+    font-size: 11px;
+    line-height: 1.5;
+    margin-top: 8px;
+    color: #7ecb92;
+  }
+
+  .ask-out.miss { color: #e0a35c; }
+  .ask-eg { font-size: 10px; color: #666d78; line-height: 1.5; margin-top: 7px; }
 
   .row {
     display: flex;
@@ -96,12 +140,7 @@
     margin-bottom: 8px;
   }
 
-  .row label {
-    flex: none;
-    width: 92px;
-    font-size: 11px;
-    color: #949aa4;
-  }
+  .row label { flex: none; width: 96px; font-size: 11px; color: #949aa4; }
 
   .row input[type=text],
   .row input[type=number],
@@ -141,12 +180,17 @@
     border-color: #2f6fdd;
   }
 
-  .hint {
+  .subhead {
     font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
     color: #6d737c;
-    line-height: 1.5;
-    margin: 0 0 10px;
+    margin: 14px 0 8px;
+    padding-top: 10px;
+    border-top: 1px solid #24272c;
   }
+
+  .hint { font-size: 10px; color: #6d737c; line-height: 1.5; margin: 0 0 10px; }
 
   .toggle {
     display: flex;
@@ -156,6 +200,9 @@
     color: #949aa4;
     margin-bottom: 10px;
   }
+
+  .toggles { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; }
+  .toggles .toggle { margin-bottom: 0; }
 
   /* ============ STAGE ============ */
 
@@ -181,10 +228,7 @@
     box-shadow: 0 10px 40px rgba(0,0,0,.5);
   }
 
-  .frame {
-    position: absolute;
-    pointer-events: none;
-  }
+  .frame { position: absolute; pointer-events: none; }
 
   .content {
     position: absolute;
@@ -200,18 +244,16 @@
     margin: 0;
   }
 
-  .el:focus { background: rgba(47, 111, 221, .12); }
+  .el:focus { box-shadow: 0 0 0 2px rgba(47, 111, 221, .5); }
 
   .grow { flex: 1 1 auto; }
 
-  /* ---- phones: sign on top and stuck there, controls underneath,
-     so you can see what a change did without scrolling ---- */
+  /* ---- phones: sign on top and stuck there, controls underneath ---- */
   @media (max-width: 820px) {
     body { flex-direction: column; -webkit-text-size-adjust: 100%; }
 
-    /* min-width:0 on both — a flex item's automatic minimum size is
-       its content, and the sheet is 816px wide before scaling, which
-       would otherwise force the whole page wider than the screen */
+    /* min-width:0 on both — a flex item's automatic minimum size is its
+       content, and the sheet is 816px wide before scaling */
     .stage {
       order: -1;
       position: sticky;
@@ -225,25 +267,24 @@
       overflow: hidden;
     }
 
-    .panel {
-      width: 100%;
-      min-width: 0;
-      height: auto;
-      border-right: none;
-    }
-
+    .panel { width: 100%; min-width: 0; height: auto; border-right: none; }
     .panel-head { position: static; }
 
-    /* iOS zooms the whole page when you focus an input under 16px */
+    /* iOS zooms the page when you focus an input under 16px */
     .row input[type=text],
     .row input[type=number],
     .row select,
-    .group textarea { font-size: 16px; padding: 9px 10px; }
+    .group textarea,
+    .ask input { font-size: 16px; padding: 9px 10px; }
 
     .row input[type=color] { width: 46px; height: 36px; }
-    .row label { width: 86px; }
+    .row label { width: 90px; }
     summary { padding: 14px 18px; }
     button { padding: 10px 13px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
   }
 
   @page { size: 215.9mm 279.4mm; margin: 0; }
@@ -264,7 +305,7 @@
 <div class="panel">
   <div class="panel-head">
     <h1>Design</h1>
-    <p>Change anything. Your edits save automatically and survive a refresh. You can also click text on the sign and type straight into it.</p>
+    <p>Change anything by hand, or type an instruction into the box in each section. Edits save automatically. You can also tap text on the sign and type into it.</p>
     <div class="btnrow">
       <button class="primary" id="print">Print / PDF</button>
       <button id="reset">Reset all</button>
@@ -287,91 +328,137 @@
 (function () {
   "use strict";
 
+  /* =====================================================================
+     FONTS — only faces that ship with Windows, macOS and iOS, so the sign
+     looks the same on the phone you design it on and the computer you
+     print it from.
+     ===================================================================== */
+
   var FONTS = {
     "Helvetica / Arial": '"Helvetica Neue", Helvetica, Arial, sans-serif',
-    "Georgia / serif":   'Georgia, "Times New Roman", Times, serif',
+    "Arial Black":       '"Arial Black", "Arial Bold", Gadget, sans-serif',
+    "Impact":            'Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif',
+    "Arial Narrow":      '"Arial Narrow", Arial, sans-serif',
+    "Georgia":           'Georgia, "Times New Roman", Times, serif',
+    "Times":             '"Times New Roman", Times, serif',
     "Palatino":          '"Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif',
-    "Courier / mono":    '"Courier New", Courier, monospace',
-    "Impact":            'Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif',
     "Trebuchet":         '"Trebuchet MS", Tahoma, sans-serif',
-    "Verdana":           'Verdana, Geneva, sans-serif'
+    "Verdana":           'Verdana, Geneva, sans-serif',
+    "Tahoma":            'Tahoma, Geneva, sans-serif',
+    "Courier / typewriter": '"Courier New", Courier, monospace',
+    "Comic Sans":        '"Comic Sans MS", "Chalkboard SE", cursive'
   };
 
-  // Each line on the sign. Order here is the order down the page.
-  var LINES = [
-    { key: "store",  name: "Store name",
-      text: "Distinctive Lighting Concepts",
-      size: 4.5, color: "#3d3d3d", weight: "600", track: 0.28, leading: 1.2, align: "center", space: 0, on: true },
-
-    { key: "title",  name: "Headline",
-      text: "BLOW OUT\nSALE",
-      size: 26, color: "#c8102e", weight: "700", track: 0.02, leading: 0.98, align: "center", space: 10, on: true },
-
-    { key: "sub",    name: "Sub line",
-      text: "ALL ITEMS ON THIS TABLE",
-      size: 8.5, color: "#17181a", weight: "700", track: 0.06, leading: 1.2, align: "center", space: 9, on: true },
-
-    { key: "price",  name: "Price",
-      text: "$25.00",
-      size: 52, color: "#c8102e", weight: "700", track: -0.02, leading: 1, align: "center", space: 10, on: true },
-
-    { key: "tag",    name: "Bottom line",
-      text: "GREAT DEALS",
-      size: 14, color: "#1f6b45", weight: "700", track: 0.08, leading: 1.1, align: "center", space: 10, on: true },
-
-    { key: "note",   name: "Small note",
-      text: "While stock lasts",
-      size: 4.5, color: "#666666", weight: "500", track: 0.16, leading: 1.2, align: "center", space: 8, on: false }
+  var FONT_WORDS = [
+    [/impact|sticker|poster ?font/, "Impact"],
+    [/arial black|heavy ?sans|fat/, "Arial Black"],
+    [/narrow|condens/, "Arial Narrow"],
+    [/georgia/, "Georgia"],
+    [/times|roman/, "Times"],
+    [/palatino|book/, "Palatino"],
+    [/trebuchet/, "Trebuchet"],
+    [/verdana/, "Verdana"],
+    [/tahoma/, "Tahoma"],
+    [/courier|typewriter|mono/, "Courier / typewriter"],
+    [/comic|handwrit|casual/, "Comic Sans"],
+    [/serif/, "Georgia"],
+    [/helvetica|arial|sans/, "Helvetica / Arial"]
   ];
 
+  var COLORS = {
+    "dark red": "#8f1020", "bright red": "#e02020", "red": "#c8102e",
+    "dark green": "#14532d", "green": "#1f6b45",
+    "navy": "#10265e", "blue": "#1d4ed8",
+    "black": "#17181a", "white": "#ffffff", "cream": "#faf7f1",
+    "light grey": "#aaaaaa", "light gray": "#aaaaaa",
+    "grey": "#666666", "gray": "#666666",
+    "orange": "#e8710a", "yellow": "#f5c518", "gold": "#b58900",
+    "purple": "#6b21a8", "pink": "#d6336c", "brown": "#7c4a21"
+  };
+
+  /* =====================================================================
+     STATE
+     ===================================================================== */
+
+  var LINES = [
+    { key: "store", name: "Store name", text: "Distinctive Lighting Concepts",
+      size: 4.5, color: "#3d3d3d", weight: "600", track: 0.28, leading: 1.2,
+      align: "center", space: 0, on: true },
+
+    { key: "title", name: "Headline", text: "BLOW OUT\nSALE",
+      size: 26, color: "#c8102e", weight: "700", track: 0.02, leading: 0.98,
+      align: "center", space: 10, on: true },
+
+    { key: "sub", name: "Sub line", text: "ALL ITEMS ON THIS TABLE",
+      size: 8.5, color: "#17181a", weight: "700", track: 0.06, leading: 1.2,
+      align: "center", space: 9, on: true },
+
+    { key: "price", name: "Price", text: "$25.00",
+      size: 52, color: "#c8102e", weight: "700", track: -0.02, leading: 1,
+      align: "center", space: 10, on: true },
+
+    { key: "tag", name: "Bottom line", text: "GREAT DEALS",
+      size: 14, color: "#1f6b45", weight: "700", track: 0.08, leading: 1.1,
+      align: "center", space: 10, on: true },
+
+    { key: "note", name: "Small note", text: "While stock lasts",
+      size: 4.5, color: "#666666", weight: "500", track: 0.16, leading: 1.2,
+      align: "center", space: 8, on: false }
+  ];
+
+  // every line also carries these; kept separate so old saves still load
+  var LINE_EXTRAS = {
+    font: "", italic: false, underline: false, caps: false,
+    hlOn: false, hl: "#f5c518",
+    bdOn: false, bd: "#17181a", bdW: 1, bdPad: 5, bdRadius: 0
+  };
+
   var SHEET = {
-    paper: "#ffffff",
-    font: "Helvetica / Arial",
-    size: "letter",
-    padX: 14,
-    padY: 18,
-    spread: "spread",
-    frameOn: true,
-    frameColor: "#17181a",
-    frameWidth: 1.2,
-    frameInset: 10,
-    frameDouble: true
+    paper: "#ffffff", font: "Helvetica / Arial", size: "letter",
+    padX: 14, padY: 18, spread: "spread",
+    frameOn: true, frameColor: "#17181a", frameWidth: 1.2,
+    frameInset: 10, frameDouble: true
   };
 
   var SIZES = {
-    letter: [215.9, 279.4],
-    a4:     [210, 297],
-    half:   [139.7, 215.9],
-    square: [210, 210]
+    letter: [215.9, 279.4], a4: [210, 297],
+    half: [139.7, 215.9], square: [210, 210], tabloid: [279.4, 431.8]
   };
 
-  var STORE_KEY = "blowout25.v1";
+  var notes = {};   // last instruction result, per section
+  var STORE_KEY = "blowout25.v2";
   var state = load();
+  var openSections = {};
 
   function defaults() {
-    return { lines: JSON.parse(JSON.stringify(LINES)), sheet: JSON.parse(JSON.stringify(SHEET)) };
+    var lines = JSON.parse(JSON.stringify(LINES)).map(function (ln) {
+      return Object.assign({}, LINE_EXTRAS, ln);
+    });
+    return { lines: lines, sheet: JSON.parse(JSON.stringify(SHEET)) };
   }
 
   function load() {
+    var base = defaults();
     try {
       var raw = localStorage.getItem(STORE_KEY);
-      if (!raw) return defaults();
-      var saved = JSON.parse(raw), base = defaults();
-      // merge, so new controls added later still get their defaults
+      if (!raw) return base;
+      var saved = JSON.parse(raw);
       base.lines.forEach(function (ln, i) {
         var s = (saved.lines || []).filter(function (x) { return x.key === ln.key; })[0];
         if (s) base.lines[i] = Object.assign(ln, s);
       });
       Object.assign(base.sheet, saved.sheet || {});
-      return base;
-    } catch (e) { return defaults(); }
+    } catch (e) {}
+    return base;
   }
 
   function save() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
   }
 
-  // ---------- render the sign ----------
+  /* =====================================================================
+     DRAW THE SIGN
+     ===================================================================== */
 
   var sheetEl = document.getElementById("sheet");
   var frameEl = document.getElementById("frame");
@@ -388,7 +475,6 @@
 
     contentEl.style.padding = s.padY + "mm " + s.padX + "mm";
     contentEl.style.justifyContent =
-      s.spread === "top" ? "flex-start" :
       s.spread === "middle" ? "center" :
       s.spread === "bottom" ? "flex-end" : "flex-start";
 
@@ -400,65 +486,70 @@
         ", inset 0 0 0 " + (s.frameWidth * 2.2) + "mm " + s.frameColor
       : "none";
 
-    // rebuild the lines
     contentEl.innerHTML = "";
-    state.lines.forEach(function (ln, i) {
-      if (!ln.on) return;
-      if (state.sheet.spread === "spread" && i > 0) {
-        var g = document.createElement("div");
-        g.className = "grow";
-        contentEl.appendChild(g);
-      }
+    var shown = state.lines.filter(function (l) { return l.on; });
+
+    shown.forEach(function (ln, i) {
+      if (s.spread === "spread" && i > 0) contentEl.appendChild(gap());
+
+      var wrap = document.createElement("div");
+      wrap.style.textAlign = ln.align;
+      wrap.style.marginTop = (i === 0 ? 0 : ln.space) + "mm";
+
       var el = document.createElement("div");
       el.className = "el";
       el.id = "el-" + ln.key;
       el.setAttribute("contenteditable", "true");
+      el.setAttribute("spellcheck", "false");
       el.textContent = ln.text;
+
+      el.style.display = (ln.bdOn || ln.hlOn) ? "inline-block" : "block";
+      el.style.fontFamily = ln.font ? (FONTS[ln.font] || "") : "";
       el.style.fontSize = ln.size + "mm";
       el.style.color = ln.color;
       el.style.fontWeight = ln.weight;
+      el.style.fontStyle = ln.italic ? "italic" : "normal";
+      el.style.textDecoration = ln.underline ? "underline" : "none";
+      el.style.textTransform = ln.caps ? "uppercase" : "none";
       el.style.letterSpacing = ln.track + "em";
       el.style.lineHeight = ln.leading;
       el.style.textAlign = ln.align;
-      el.style.marginTop = (i === 0 ? 0 : ln.space) + "mm";
-      // letter-spacing pads the right of the last glyph; nudge centred
-      // text back so it looks optically centred
+      el.style.background = ln.hlOn ? ln.hl : "transparent";
+      el.style.border = ln.bdOn ? (ln.bdW + "mm solid " + ln.bd) : "none";
+      el.style.borderRadius = ln.bdRadius + "mm";
+      el.style.padding = (ln.bdOn || ln.hlOn) ? (ln.bdPad + "mm " + (ln.bdPad * 1.4) + "mm") : "0";
+      // letter-spacing pads the right of the last glyph; pull centred text back
       el.style.textIndent = (ln.align === "center" ? ln.track : 0) + "em";
+
       el.addEventListener("input", function () {
         ln.text = el.textContent;
         var ta = document.getElementById("ta-" + ln.key);
         if (ta) ta.value = ln.text;
         save();
       });
-      contentEl.appendChild(el);
+
+      wrap.appendChild(el);
+      contentEl.appendChild(wrap);
     });
 
-    if (state.sheet.spread === "spread") {
-      var tail = document.createElement("div");
-      tail.className = "grow";
-      contentEl.appendChild(tail);
-    }
-
+    if (s.spread === "spread" && shown.length) contentEl.appendChild(gap());
     fit();
+  }
+
+  function gap() {
+    var g = document.createElement("div");
+    g.className = "grow";
+    return g;
   }
 
   function fit() {
     var scaler = document.querySelector(".scaler");
     var stage = document.querySelector(".stage");
     var phone = window.matchMedia("(max-width: 820px)").matches;
-    var availW = stage.clientWidth - (phone ? 24 : 48);
-    var k = Math.min(1, availW / sheetEl.offsetWidth);
-
-    // on a phone the sign is pinned to the top of the screen, so it
-    // also has to fit the height it is allowed to occupy
-    if (phone) {
-      var availH = window.innerHeight * 0.44;
-      k = Math.min(k, availH / sheetEl.offsetHeight);
-    }
-
-    // scaling with a transform leaves the element's layout box at full
-    // size, which would push the page wider than a phone screen — so the
-    // box is resized to the scaled dimensions as well
+    var k = Math.min(1, (stage.clientWidth - (phone ? 24 : 48)) / sheetEl.offsetWidth);
+    if (phone) k = Math.min(k, (window.innerHeight * 0.44) / sheetEl.offsetHeight);
+    // a transform leaves the layout box at full size, which would push the
+    // page wider than a phone screen, so the box is resized too
     scaler.style.transform = "scale(" + k + ")";
     scaler.style.width = (sheetEl.offsetWidth * k) + "px";
     scaler.style.height = (sheetEl.offsetHeight * k) + "px";
@@ -466,7 +557,198 @@
 
   window.addEventListener("resize", fit);
 
-  // ---------- build the panel ----------
+  /* =====================================================================
+     THE INSTRUCTION BOX
+
+     Not a live AI — a published page cannot call one — but it reads plain
+     instructions and edits the settings for you. It splits what you type
+     on "and" / commas and applies each part, so a sentence like "add a
+     border and make the font stick out more" does both things.
+     ===================================================================== */
+
+  function findColor(s) {
+    var names = Object.keys(COLORS).sort(function (a, b) { return b.length - a.length; });
+    for (var i = 0; i < names.length; i++) {
+      if (new RegExp("\\b" + names[i] + "\\b").test(s)) return { name: names[i], hex: COLORS[names[i]] };
+    }
+    var hex = s.match(/#[0-9a-f]{6}\b/);
+    return hex ? { name: hex[0], hex: hex[0] } : null;
+  }
+
+  function findFont(s) {
+    for (var i = 0; i < FONT_WORDS.length; i++) {
+      if (FONT_WORDS[i][0].test(s)) return FONT_WORDS[i][1];
+    }
+    return null;
+  }
+
+  function amount(s) {
+    if (/\b(way|much|a lot|far|loads)\b/.test(s)) return 1.6;
+    if (/\b(slightly|a bit|a little|touch|tad)\b/.test(s)) return 1.08;
+    return 1.25;
+  }
+
+  var off = /\b(no|remove|delete|without|turn off|get rid of|drop the|hide)\b/;
+
+  // ---- one clause, applied to one line ----
+  function runLine(c, ln, did) {
+    var col = findColor(c), fnt = findFont(c), n = c.match(/-?\d+(\.\d+)?/);
+    var loud = /\b(stick|stand)s? out|pop|louder|shout|attention|noticeab|stronger|bolder look|more impact|eye.?catch/.test(c);
+    var hit = false;
+
+    if (/\b(bo[ao]?rder|outline|box|frame)\b/.test(c)) {
+      if (off.test(c)) { ln.bdOn = false; did.push("border off"); }
+      else {
+        ln.bdOn = true;
+        if (/\b(thick|thicker|heavy|bold)\b/.test(c)) ln.bdW = Math.min(8, ln.bdW + 0.8);
+        if (/\b(thin|thinner|fine|hairline)\b/.test(c)) ln.bdW = Math.max(0.2, ln.bdW - 0.5);
+        if (/\bround/.test(c)) ln.bdRadius = 4;
+        if (/\bsquare|sharp\b/.test(c)) ln.bdRadius = 0;
+        if (col) ln.bd = col.hex;
+        did.push("border on" + (col ? " in " + col.name : ""));
+      }
+      hit = true;
+    }
+
+    if (/\b(highlight|background|behind)\b/.test(c)) {
+      if (off.test(c)) { ln.hlOn = false; did.push("highlight off"); }
+      else { ln.hlOn = true; if (col) ln.hl = col.hex; did.push("highlight on" + (col ? " in " + col.name : "")); }
+      hit = true;
+    }
+
+    if (fnt && (/\bfont|typeface|lettering\b/.test(c) || !hit)) {
+      ln.font = fnt; did.push("font set to " + fnt); hit = true;
+    } else if (/\bfont|typeface|lettering\b/.test(c) && loud) {
+      ln.font = "Impact"; did.push("font set to Impact"); hit = true;
+    }
+
+    if (/\bsize\b/.test(c) && n) { ln.size = Math.abs(parseFloat(n[0])); did.push("size " + ln.size + "mm"); hit = true; }
+    else if (/\b(bigger|larger|grow|increase|huge|massive|giant)\b/.test(c)) {
+      ln.size = Math.round(ln.size * (/(huge|massive|giant)/.test(c) ? 1.8 : amount(c)) * 10) / 10;
+      did.push("bigger (" + ln.size + "mm)"); hit = true;
+    } else if (/\b(smaller|shrink|reduce|tiny|decrease)\b/.test(c)) {
+      ln.size = Math.round(ln.size / (/tiny/.test(c) ? 1.8 : amount(c)) * 10) / 10;
+      did.push("smaller (" + ln.size + "mm)"); hit = true;
+    }
+
+    if (/\b(bolder|bold|heavier|thicker text|strong)\b/.test(c) && !/bo[ao]?rder/.test(c)) {
+      ln.weight = ln.weight >= "700" ? "900" : "700"; did.push("bolder"); hit = true;
+    } else if (/\b(lighter|thinner|normal weight|regular)\b/.test(c)) {
+      ln.weight = "400"; did.push("lighter"); hit = true;
+    }
+
+    if (col && !/bo[ao]?rder|highlight|background|behind|paper/.test(c)) {
+      ln.color = col.hex; did.push("colour " + col.name); hit = true;
+    }
+
+    if (/\b(upper ?case|all caps|capitals|shout)\b/.test(c)) { ln.caps = true; did.push("uppercase"); hit = true; }
+    if (/\b(lower ?case|sentence case|normal case)\b/.test(c)) { ln.caps = false; did.push("normal case"); hit = true; }
+    if (/\bitalic|slant/.test(c)) { ln.italic = !off.test(c); did.push(ln.italic ? "italic" : "no italic"); hit = true; }
+    if (/\bunderlin/.test(c)) { ln.underline = !off.test(c); did.push(ln.underline ? "underlined" : "no underline"); hit = true; }
+
+    if (/\bcent(er|re)\b/.test(c)) { ln.align = "center"; did.push("centred"); hit = true; }
+    else if (/\bleft\b/.test(c)) { ln.align = "left"; did.push("left aligned"); hit = true; }
+    else if (/\bright\b/.test(c)) { ln.align = "right"; did.push("right aligned"); hit = true; }
+
+    if (/\b(letter ?spac\w*|track\w*|kern\w*|spread out|space out|airier)/.test(c)) {
+      ln.track = Math.round((ln.track + (off.test(c) ? -0.06 : 0.06)) * 100) / 100;
+      did.push("letter spacing " + ln.track); hit = true;
+    } else if (/\b(tighter|condense|closer together)\b/.test(c)) {
+      ln.track = Math.round((ln.track - 0.04) * 100) / 100; did.push("tighter"); hit = true;
+    }
+
+    if (/\b(space above|gap above|move (it )?down|push (it )?down|more room above)\b/.test(c)) {
+      ln.space += /less|smaller|reduce/.test(c) ? -5 : 5;
+      ln.space = Math.max(0, ln.space); did.push("gap above " + ln.space + "mm"); hit = true;
+    } else if (/\bmove (it )?up\b/.test(c)) {
+      ln.space = Math.max(0, ln.space - 5); did.push("gap above " + ln.space + "mm"); hit = true;
+    }
+
+    if (/\b(line height|leading)\b/.test(c)) {
+      ln.leading = Math.round((ln.leading + (/less|tighter|smaller/.test(c) ? -0.1 : 0.1)) * 100) / 100;
+      did.push("line height " + ln.leading); hit = true;
+    }
+
+    if (/\b(hide|remove|delete|take out)\b.*\b(this|line|it)\b/.test(c) || /^(hide|remove) it$/.test(c.trim())) {
+      ln.on = false; did.push("line hidden"); hit = true;
+    }
+    if (/\b(show|bring back|put back)\b/.test(c)) { ln.on = true; did.push("line shown"); hit = true; }
+
+    // "make it stick out" with nothing else named: size + weight together
+    if (loud && !hit) {
+      ln.size = Math.round(ln.size * 1.3 * 10) / 10;
+      ln.weight = ln.weight >= "700" ? "900" : "700";
+      did.push("bigger and bolder"); hit = true;
+    }
+    return hit;
+  }
+
+  // ---- one clause, applied to the sheet ----
+  function runSheet(c, did) {
+    var col = findColor(c), fnt = findFont(c), n = c.match(/-?\d+(\.\d+)?/);
+    var s = state.sheet, hit = false;
+
+    if (/\b(bo[ao]?rder|frame|outline)\b/.test(c)) {
+      if (off.test(c)) { s.frameOn = false; did.push("border off"); }
+      else {
+        s.frameOn = true;
+        if (/\b(thick|thicker|heavy|bold)\b/.test(c)) s.frameWidth = Math.min(10, s.frameWidth + 0.8);
+        if (/\b(thin|thinner|fine)\b/.test(c)) s.frameWidth = Math.max(0.2, s.frameWidth - 0.4);
+        if (/\bdouble\b/.test(c)) s.frameDouble = true;
+        if (/\bsingle|one line\b/.test(c)) s.frameDouble = false;
+        if (col) s.frameColor = col.hex;
+        did.push("border on" + (col ? " in " + col.name : ""));
+      }
+      hit = true;
+    }
+
+    if (/\b(paper|sheet|page|background)\b/.test(c) && col) { s.paper = col.hex; did.push("paper " + col.name); hit = true; }
+    if (fnt) { s.font = fnt; did.push("font set to " + fnt); hit = true; }
+
+    if (/\ba4\b/.test(c)) { s.size = "a4"; did.push("A4"); hit = true; }
+    else if (/\bletter\b/.test(c)) { s.size = "letter"; did.push("US Letter"); hit = true; }
+    else if (/\bsquare\b/.test(c)) { s.size = "square"; did.push("square"); hit = true; }
+    else if (/\btabloid|11.?x.?17|big|large sheet\b/.test(c)) { s.size = "tabloid"; did.push("tabloid"); hit = true; }
+    else if (/\bhalf\b/.test(c)) { s.size = "half"; did.push("half letter"); hit = true; }
+
+    if (/\bmargin/.test(c)) {
+      var d = /less|smaller|narrow|tighter/.test(c) ? -3 : 3;
+      if (n && /\d/.test(n[0]) && /margin\D*\d/.test(c)) { s.padX = s.padY = Math.abs(parseFloat(n[0])); }
+      else { s.padX = Math.max(0, s.padX + d); s.padY = Math.max(0, s.padY + d); }
+      did.push("margins " + s.padX + "/" + s.padY + "mm"); hit = true;
+    }
+
+    if (/\bspread|even|fill the (page|sheet)\b/.test(c)) { s.spread = "spread"; did.push("spread evenly"); hit = true; }
+    else if (/\btop\b/.test(c)) { s.spread = "top"; did.push("stacked at top"); hit = true; }
+    else if (/\bmiddle|cent(er|re) of the (page|sheet)\b/.test(c)) { s.spread = "middle"; did.push("stacked in middle"); hit = true; }
+    else if (/\bbottom\b/.test(c)) { s.spread = "bottom"; did.push("stacked at bottom"); hit = true; }
+
+    return hit;
+  }
+
+  function ask(text, ln, outEl) {
+    var did = [], any = false, id = ln ? ln.key : "sheet";
+    var clauses = text.toLowerCase().split(/\s*(?:,|;|\band\b|\bthen\b|\balso\b)\s*/).filter(Boolean);
+    clauses.forEach(function (c) {
+      any = (ln ? runLine(c, ln, did) : runSheet(c, did)) || any;
+    });
+
+    if (any) {
+      // the panel is rebuilt to show the new values, which throws away
+      // this element — so the message is stored and re-rendered with it
+      notes[id] = { text: "Done: " + did.join(", ") + ".", miss: false };
+      save();
+      rebuild();
+    } else {
+      notes[id] = { text: "I didn't catch that. Try naming what to change — bigger, bolder, red, add a border, Impact font, centre it, more letter spacing.", miss: true };
+      outEl.className = "ask-out miss";
+      outEl.textContent = notes[id].text;
+    }
+  }
+
+  /* =====================================================================
+     PANEL
+     ===================================================================== */
 
   var controls = document.getElementById("controls");
 
@@ -475,16 +757,14 @@
     r.className = "row";
     var l = document.createElement("label");
     l.textContent = label;
-    r.appendChild(l);
-    r.appendChild(node);
+    r.appendChild(l); r.appendChild(node);
     return r;
   }
 
   function input(type, value, step, onchange) {
     var i = document.createElement("input");
-    i.type = type;
-    i.value = value;
-    if (step != null) { i.step = step; }
+    i.type = type; i.value = value;
+    if (step != null) i.step = step;
     i.addEventListener("input", function () { onchange(i.value); });
     return i;
   }
@@ -502,9 +782,28 @@
     return s;
   }
 
-  function section(title, open) {
+  function check(label, value, onchange) {
+    var l = document.createElement("label");
+    l.className = "toggle";
+    var cb = document.createElement("input");
+    cb.type = "checkbox"; cb.checked = value;
+    cb.addEventListener("change", function () { onchange(cb.checked); });
+    l.appendChild(cb);
+    l.appendChild(document.createTextNode(label));
+    return l;
+  }
+
+  function subhead(text) {
+    var h = document.createElement("div");
+    h.className = "subhead";
+    h.textContent = text;
+    return h;
+  }
+
+  function section(title, openByDefault) {
     var d = document.createElement("details");
-    if (open) d.open = true;
+    d.open = (title in openSections) ? openSections[title] : openByDefault;
+    d.addEventListener("toggle", function () { openSections[title] = d.open; });
     var sm = document.createElement("summary");
     sm.textContent = title;
     d.appendChild(sm);
@@ -515,22 +814,63 @@
     return g;
   }
 
+  function askBox(g, ln, examples) {
+    var box = document.createElement("div");
+    box.className = "ask";
+
+    var lab = document.createElement("div");
+    lab.className = "ask-label";
+    lab.textContent = "Tell it what you want";
+    box.appendChild(lab);
+
+    var r = document.createElement("div");
+    r.className = "ask-row";
+    var inp = document.createElement("input");
+    inp.type = "text";
+    inp.placeholder = examples[0];
+    var btn = document.createElement("button");
+    btn.textContent = "Apply";
+    r.appendChild(inp); r.appendChild(btn);
+    box.appendChild(r);
+
+    var out = document.createElement("div");
+    var id = ln ? ln.key : "sheet";
+    var prev = notes[id];
+    out.className = "ask-out" + (prev && prev.miss ? " miss" : "");
+    if (prev) out.textContent = prev.text;
+    box.appendChild(out);
+
+    var eg = document.createElement("div");
+    eg.className = "ask-eg";
+    eg.textContent = "Try: " + examples.join(" · ");
+    box.appendChild(eg);
+
+    function go() {
+      var v = inp.value.trim();
+      if (!v) return;
+      ask(v, ln, out);
+      inp.value = "";
+    }
+    btn.addEventListener("click", go);
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); go(); } });
+
+    g.appendChild(box);
+  }
+
   function buildPanel() {
     controls.innerHTML = "";
 
-    // ---- a section per line ----
     state.lines.forEach(function (ln, idx) {
-      var g = section(ln.name, idx < 4);
+      var g = section(ln.name, idx < 2);
 
-      var t = document.createElement("label");
-      t.className = "toggle";
-      var cb = document.createElement("input");
-      cb.type = "checkbox";
-      cb.checked = ln.on;
-      cb.addEventListener("change", function () { ln.on = cb.checked; save(); draw(); });
-      t.appendChild(cb);
-      t.appendChild(document.createTextNode("Show this line"));
-      g.appendChild(t);
+      askBox(g, ln, [
+        "add a border and make it stick out more",
+        "bigger and bolder",
+        "dark red, Impact font",
+        "highlight it in yellow"
+      ]);
+
+      g.appendChild(check("Show this line", ln.on, function (v) { ln.on = v; save(); rebuild(); }));
 
       var ta = document.createElement("textarea");
       ta.id = "ta-" + ln.key;
@@ -549,85 +889,81 @@
       hint.textContent = "Press Enter inside the box for a new line.";
       g.appendChild(hint);
 
-      g.appendChild(row("Size (mm)", input("number", ln.size, "0.5", function (v) {
-        ln.size = parseFloat(v) || 0; save(); draw();
-      })));
-      g.appendChild(row("Colour", input("color", ln.color, null, function (v) {
-        ln.color = v; save(); draw();
-      })));
+      g.appendChild(row("Font", select(
+        [["", "Same as sheet"]].concat(Object.keys(FONTS)), ln.font,
+        function (v) { ln.font = v; save(); draw(); })));
+      g.appendChild(row("Size (mm)", input("number", ln.size, "0.5", function (v) { ln.size = parseFloat(v) || 0; save(); draw(); })));
+      g.appendChild(row("Colour", input("color", ln.color, null, function (v) { ln.color = v; save(); draw(); })));
       g.appendChild(row("Weight", select(
         [["400", "Normal"], ["500", "Medium"], ["600", "Semibold"], ["700", "Bold"], ["900", "Black"]],
         ln.weight, function (v) { ln.weight = v; save(); draw(); })));
       g.appendChild(row("Align", select(
         [["left", "Left"], ["center", "Centre"], ["right", "Right"]],
         ln.align, function (v) { ln.align = v; save(); draw(); })));
-      g.appendChild(row("Letter space", input("number", ln.track, "0.01", function (v) {
-        ln.track = parseFloat(v) || 0; save(); draw();
-      })));
-      g.appendChild(row("Line height", input("number", ln.leading, "0.02", function (v) {
-        ln.leading = parseFloat(v) || 1; save(); draw();
-      })));
-      g.appendChild(row("Gap above (mm)", input("number", ln.space, "1", function (v) {
-        ln.space = parseFloat(v) || 0; save(); draw();
-      })));
+
+      var tg = document.createElement("div");
+      tg.className = "toggles";
+      tg.appendChild(check("Italic", ln.italic, function (v) { ln.italic = v; save(); draw(); }));
+      tg.appendChild(check("Underline", ln.underline, function (v) { ln.underline = v; save(); draw(); }));
+      tg.appendChild(check("ALL CAPS", ln.caps, function (v) { ln.caps = v; save(); draw(); }));
+      g.appendChild(tg);
+
+      g.appendChild(row("Letter space", input("number", ln.track, "0.01", function (v) { ln.track = parseFloat(v) || 0; save(); draw(); })));
+      g.appendChild(row("Line height", input("number", ln.leading, "0.02", function (v) { ln.leading = parseFloat(v) || 1; save(); draw(); })));
+      g.appendChild(row("Gap above (mm)", input("number", ln.space, "1", function (v) { ln.space = parseFloat(v) || 0; save(); draw(); })));
+
+      g.appendChild(subhead("Box around this line"));
+      g.appendChild(check("Show border", ln.bdOn, function (v) { ln.bdOn = v; save(); draw(); }));
+      g.appendChild(row("Border colour", input("color", ln.bd, null, function (v) { ln.bd = v; save(); draw(); })));
+      g.appendChild(row("Thickness", input("number", ln.bdW, "0.1", function (v) { ln.bdW = parseFloat(v) || 0; save(); draw(); })));
+      g.appendChild(row("Padding (mm)", input("number", ln.bdPad, "1", function (v) { ln.bdPad = parseFloat(v) || 0; save(); draw(); })));
+      g.appendChild(row("Corner round", input("number", ln.bdRadius, "1", function (v) { ln.bdRadius = parseFloat(v) || 0; save(); draw(); })));
+
+      g.appendChild(subhead("Highlight behind"));
+      g.appendChild(check("Show highlight", ln.hlOn, function (v) { ln.hlOn = v; save(); draw(); }));
+      g.appendChild(row("Colour", input("color", ln.hl, null, function (v) { ln.hl = v; save(); draw(); })));
     });
 
-    // ---- the sheet itself ----
+    // ---- the sheet ----
     var s = state.sheet;
-    var g2 = section("Paper & layout", false);
+    var g2 = section("Paper, border & layout", false);
+
+    askBox(g2, null, [
+      "make it A4 with a thick red border",
+      "cream paper",
+      "Georgia font",
+      "wider margins"
+    ]);
 
     g2.appendChild(row("Paper size", select(
-      [["letter", "US Letter"], ["a4", "A4"], ["half", "Half letter"], ["square", "Square 210mm"]],
+      [["letter", "US Letter"], ["a4", "A4"], ["half", "Half letter"],
+       ["square", "Square 210mm"], ["tabloid", "Tabloid 11×17"]],
       s.size, function (v) { s.size = v; save(); draw(); })));
-    g2.appendChild(row("Paper colour", input("color", s.paper, null, function (v) {
-      s.paper = v; save(); draw();
-    })));
-    g2.appendChild(row("Font", select(Object.keys(FONTS), s.font, function (v) {
-      s.font = v; save(); draw();
-    })));
+    g2.appendChild(row("Paper colour", input("color", s.paper, null, function (v) { s.paper = v; save(); draw(); })));
+    g2.appendChild(row("Font", select(Object.keys(FONTS), s.font, function (v) { s.font = v; save(); draw(); })));
     g2.appendChild(row("Spacing", select(
-      [["spread", "Spread evenly"], ["top", "Stack from top"], ["middle", "Stack in middle"], ["bottom", "Stack at bottom"]],
+      [["spread", "Spread evenly"], ["top", "Stack from top"],
+       ["middle", "Stack in middle"], ["bottom", "Stack at bottom"]],
       s.spread, function (v) { s.spread = v; save(); draw(); })));
-    g2.appendChild(row("Margin side", input("number", s.padX, "1", function (v) {
-      s.padX = parseFloat(v) || 0; save(); draw();
-    })));
-    g2.appendChild(row("Margin top", input("number", s.padY, "1", function (v) {
-      s.padY = parseFloat(v) || 0; save(); draw();
-    })));
+    g2.appendChild(row("Margin side", input("number", s.padX, "1", function (v) { s.padX = parseFloat(v) || 0; save(); draw(); })));
+    g2.appendChild(row("Margin top", input("number", s.padY, "1", function (v) { s.padY = parseFloat(v) || 0; save(); draw(); })));
 
-    var g3 = section("Border", false);
-    var t3 = document.createElement("label");
-    t3.className = "toggle";
-    var cb3 = document.createElement("input");
-    cb3.type = "checkbox";
-    cb3.checked = s.frameOn;
-    cb3.addEventListener("change", function () { s.frameOn = cb3.checked; save(); draw(); });
-    t3.appendChild(cb3);
-    t3.appendChild(document.createTextNode("Show border"));
-    g3.appendChild(t3);
-
-    var t4 = document.createElement("label");
-    t4.className = "toggle";
-    var cb4 = document.createElement("input");
-    cb4.type = "checkbox";
-    cb4.checked = s.frameDouble;
-    cb4.addEventListener("change", function () { s.frameDouble = cb4.checked; save(); draw(); });
-    t4.appendChild(cb4);
-    t4.appendChild(document.createTextNode("Double line"));
-    g3.appendChild(t4);
-
-    g3.appendChild(row("Colour", input("color", s.frameColor, null, function (v) {
-      s.frameColor = v; save(); draw();
-    })));
-    g3.appendChild(row("Thickness", input("number", s.frameWidth, "0.1", function (v) {
-      s.frameWidth = parseFloat(v) || 0; save(); draw();
-    })));
-    g3.appendChild(row("Inset (mm)", input("number", s.frameInset, "1", function (v) {
-      s.frameInset = parseFloat(v) || 0; save(); draw();
-    })));
+    g2.appendChild(subhead("Border round the sheet"));
+    g2.appendChild(check("Show border", s.frameOn, function (v) { s.frameOn = v; save(); draw(); }));
+    g2.appendChild(check("Double line", s.frameDouble, function (v) { s.frameDouble = v; save(); draw(); }));
+    g2.appendChild(row("Colour", input("color", s.frameColor, null, function (v) { s.frameColor = v; save(); draw(); })));
+    g2.appendChild(row("Thickness", input("number", s.frameWidth, "0.1", function (v) { s.frameWidth = parseFloat(v) || 0; save(); draw(); })));
+    g2.appendChild(row("Inset (mm)", input("number", s.frameInset, "1", function (v) { s.frameInset = parseFloat(v) || 0; save(); draw(); })));
   }
 
-  // ---------- buttons ----------
+  function rebuild() {
+    var y = document.querySelector(".panel").scrollTop;
+    buildPanel();
+    draw();
+    document.querySelector(".panel").scrollTop = y;
+  }
+
+  /* ===================================================================== */
 
   document.getElementById("print").addEventListener("click", function () {
     var dims = SIZES[state.sheet.size] || SIZES.letter;
@@ -642,8 +978,7 @@
     if (!confirm("Reset every setting back to the starting sign?")) return;
     state = defaults();
     save();
-    buildPanel();
-    draw();
+    rebuild();
   });
 
   buildPanel();
