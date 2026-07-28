@@ -246,6 +246,27 @@
 
   .el:focus { box-shadow: 0 0 0 2px rgba(47, 111, 221, .5); }
 
+  /* the graphic sits behind the words, centred on them */
+  .linebox { position: relative; display: inline-block; }
+  .linebox .el { position: relative; z-index: 1; }
+
+  .gfx {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+    line-height: 0;
+  }
+
+  .divline { line-height: 0; display: block; }
+  .divline svg { display: inline-block; }
+
+  .flank { display: inline-block; vertical-align: middle; line-height: 0; }
+
+  .corner { position: absolute; z-index: 1; pointer-events: none; line-height: 0; }
+
   .grow { flex: 1 1 auto; }
 
   /* ---- phones: sign on top and stuck there, controls underneath ---- */
@@ -308,6 +329,7 @@
     <p>Change anything by hand, or type an instruction into the box in each section. Edits save automatically. You can also tap text on the sign and type into it.</p>
     <div class="btnrow">
       <button class="primary" id="print">Print / PDF</button>
+      <button id="wording">Plain wording</button>
       <button id="reset">Reset all</button>
     </div>
   </div>
@@ -319,6 +341,7 @@
   <div class="scaler">
     <div class="sheet" id="sheet">
       <div class="frame" id="frame"></div>
+      <div id="corners"></div>
       <div class="content" id="content"></div>
     </div>
   </div>
@@ -410,14 +433,32 @@
   var LINE_EXTRAS = {
     font: "", italic: false, underline: false, caps: false,
     hlOn: false, hl: "#f5c518",
-    bdOn: false, bd: "#17181a", bdW: 1, bdPad: 5, bdRadius: 0
+    bdOn: false, bd: "#17181a", bdW: 1, bdPad: 5, bdRadius: 0,
+    // graphic behind the words
+    gfx: "none", gfxColor: "#c8102e", gfxSize: 122, gfxW: 1.2,
+    // a rule above the line, and marks either side of it
+    div: "none", divColor: "#17181a", divW: 0.8, divLen: 40,
+    flank: "none", flankColor: "#c8102e"
   };
 
   var SHEET = {
     paper: "#ffffff", font: "Helvetica / Arial", size: "letter",
     padX: 14, padY: 18, spread: "spread",
     frameOn: true, frameColor: "#17181a", frameWidth: 1.2,
-    frameInset: 10, frameDouble: true
+    frameInset: 10, frameDouble: true,
+    corners: "none", cornerColor: "#17181a", cornerSize: 9
+  };
+
+  /* Blunt, plain wording — how a real table sign is actually written.
+     Applying it rewrites the WORDS ONLY; every size, colour and graphic
+     setting is left exactly as it is. */
+  var WORDING = {
+    store: "Distinctive Lighting Concepts",
+    title: "BLOW OUT SALE",
+    sub:   "EVERYTHING ON THIS TABLE",
+    price: "$25",
+    tag:   "EACH",
+    note:  "ALL SALES FINAL \u00b7 WHILE THEY LAST"
   };
 
   var SIZES = {
@@ -457,8 +498,237 @@
   }
 
   /* =====================================================================
+     GRAPHICS
+
+     Thin geometric marks, drawn as inline SVG and sized in mm like
+     everything else on the sheet, so they print at true size. Each
+     returns an element, or null when the style is "none".
+     ===================================================================== */
+
+  var SVGNS = "http://www.w3.org/2000/svg";
+
+  function svg(w, h, vb) {
+    var e = document.createElementNS(SVGNS, "svg");
+    e.setAttribute("viewBox", vb || ("0 0 " + w + " " + h));
+    e.setAttribute("width", w + "mm");
+    e.setAttribute("height", h + "mm");
+    e.setAttribute("fill", "none");
+    e.style.display = "block";
+    e.style.overflow = "visible";
+    return e;
+  }
+
+  function shape(tag, attrs) {
+    var e = document.createElementNS(SVGNS, tag);
+    Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    return e;
+  }
+
+  /* ---- the graphic behind a line: sits under the words, centred ----
+     Sized off the text box it wraps, so it grows with the price. */
+  function behind(ln, boxW, boxH) {
+    if (!ln.gfx || ln.gfx === "none") return null;
+
+    var k = ln.gfxSize / 100;
+    var w = Math.max(boxW, 8) * k;
+    var h = Math.max(boxH, 8) * k;
+    var t = ln.gfxW;
+    var col = ln.gfxColor;
+    var g = svg(w, h);
+    var wrap = document.createElement("div");
+    wrap.className = "gfx";
+
+    if (ln.gfx === "ring") {
+      // a circle wide enough to clear the text, so it reads as a ring
+      // round the price rather than an ellipse squashed onto it
+      var r = Math.max(w, h) / 2 - t;
+      g = svg(r * 2 + t * 2, r * 2 + t * 2);
+      g.appendChild(shape("circle", {
+        cx: r + t, cy: r + t, r: r, stroke: col, "stroke-width": t
+      }));
+    } else if (ln.gfx === "oval") {
+      g.appendChild(shape("ellipse", {
+        cx: w / 2, cy: h / 2, rx: w / 2 - t, ry: h / 2 - t,
+        stroke: col, "stroke-width": t
+      }));
+    } else if (ln.gfx === "disc") {
+      g.appendChild(shape("ellipse", {
+        cx: w / 2, cy: h / 2, rx: w / 2, ry: h / 2, fill: col
+      }));
+    } else if (ln.gfx === "brackets") {
+      var arm = Math.min(w, h) * 0.3;
+      [[0, 0, 1, 1], [w, 0, -1, 1], [0, h, 1, -1], [w, h, -1, -1]].forEach(function (c) {
+        g.appendChild(shape("path", {
+          d: "M" + (c[0] + c[2] * arm) + " " + c[1] +
+             " H" + c[0] + " V" + (c[1] + c[3] * arm),
+          stroke: col, "stroke-width": t, "stroke-linecap": "square"
+        }));
+      });
+    } else if (ln.gfx === "rules") {
+      g.appendChild(shape("path", { d: "M0 " + (t / 2) + " H" + w, stroke: col, "stroke-width": t }));
+      g.appendChild(shape("path", { d: "M0 " + (h - t / 2) + " H" + w, stroke: col, "stroke-width": t }));
+    } else if (ln.gfx === "tag") {
+      var r2 = Math.min(w, h) * 0.14;
+      g.appendChild(shape("rect", {
+        x: t / 2, y: t / 2, width: w - t, height: h - t,
+        rx: r2, stroke: col, "stroke-width": t
+      }));
+      g.appendChild(shape("circle", {
+        cx: w * 0.07, cy: h / 2, r: Math.min(w, h) * 0.05, stroke: col, "stroke-width": t
+      }));
+    } else {
+      return null;
+    }
+
+    wrap.appendChild(g);
+    return wrap;
+  }
+
+  /* ---- a rule above a line ---- */
+  function divider(ln, widthMM) {
+    if (!ln.div || ln.div === "none") return null;
+
+    var w = Math.max(widthMM * (ln.divLen / 100), 6);
+    var t = ln.divW;
+    var h = Math.max(t * 6, 4);
+    var col = ln.divColor;
+    var g = svg(w, h);
+    var mid = h / 2;
+
+    function line(x1, x2, y, dash) {
+      var a = { d: "M" + x1 + " " + y + " H" + x2, stroke: col, "stroke-width": t };
+      if (dash) a["stroke-dasharray"] = (t * 3) + " " + (t * 2.5);
+      return shape("path", a);
+    }
+
+    if (ln.div === "rule") {
+      g.appendChild(line(0, w, mid));
+    } else if (ln.div === "dashed") {
+      g.appendChild(line(0, w, mid, true));
+    } else if (ln.div === "double") {
+      g.appendChild(line(0, w, mid - t * 1.6));
+      g.appendChild(line(0, w, mid + t * 1.6));
+    } else if (ln.div === "dot") {
+      var gapD = h * 0.9;
+      g.appendChild(line(0, w / 2 - gapD, mid));
+      g.appendChild(line(w / 2 + gapD, w, mid));
+      g.appendChild(shape("circle", { cx: w / 2, cy: mid, r: t * 1.6, fill: col }));
+    } else if (ln.div === "diamond") {
+      var gp = h;
+      g.appendChild(line(0, w / 2 - gp, mid));
+      g.appendChild(line(w / 2 + gp, w, mid));
+      var d = t * 2.2;
+      g.appendChild(shape("path", {
+        d: "M" + (w / 2) + " " + (mid - d) + " L" + (w / 2 + d) + " " + mid +
+           " L" + (w / 2) + " " + (mid + d) + " L" + (w / 2 - d) + " " + mid + " Z",
+        fill: col
+      }));
+    } else {
+      return null;
+    }
+
+    var box = document.createElement("div");
+    box.className = "divline";
+    box.appendChild(g);
+    return box;
+  }
+
+  /* ---- small marks either side of a line ---- */
+  function flankMark(ln, sizeMM, dir) {
+    if (!ln.flank || ln.flank === "none") return null;
+    var m = Math.max(sizeMM * 0.42, 2);
+    var t = Math.max(m * 0.13, 0.4);
+    var g = svg(m, m);
+    var col = ln.flankColor;
+
+    if (ln.flank === "dot") {
+      g.appendChild(shape("circle", { cx: m / 2, cy: m / 2, r: m * 0.17, fill: col }));
+    } else if (ln.flank === "rule") {
+      g.appendChild(shape("path", { d: "M0 " + (m / 2) + " H" + m, stroke: col, "stroke-width": t }));
+    } else if (ln.flank === "chevron") {
+      var x0 = dir > 0 ? m * 0.28 : m * 0.72;
+      var x1 = dir > 0 ? m * 0.68 : m * 0.32;
+      g.appendChild(shape("path", {
+        d: "M" + x0 + " " + (m * 0.24) + " L" + x1 + " " + (m / 2) + " L" + x0 + " " + (m * 0.76),
+        stroke: col, "stroke-width": t, "stroke-linecap": "square", "stroke-linejoin": "miter"
+      }));
+    } else if (ln.flank === "slash") {
+      g.appendChild(shape("path", {
+        d: "M" + (m * 0.62) + " " + (m * 0.22) + " L" + (m * 0.38) + " " + (m * 0.78),
+        stroke: col, "stroke-width": t, "stroke-linecap": "square"
+      }));
+    } else {
+      return null;
+    }
+
+    var box = document.createElement("span");
+    box.className = "flank";
+    box.appendChild(g);
+    return box;
+  }
+
+  /* ---- corner marks on the sheet ---- */
+  function drawCorners() {
+    var s = state.sheet;
+    var host = document.getElementById("corners");
+    host.innerHTML = "";
+    if (!s.corners || s.corners === "none") return;
+
+    // sit inside the border when there is one, so the two never collide
+    var inset = (s.frameOn ? s.frameInset + s.frameWidth * 2.5 : 8) + 4;
+    var m = s.cornerSize;
+    var t = Math.max(m * 0.11, 0.4);
+    var col = s.cornerColor;
+
+    [[0, 0], [1, 0], [0, 1], [1, 1]].forEach(function (c) {
+      var g = svg(m, m);
+      var sx = c[0] ? -1 : 1, sy = c[1] ? -1 : 1;
+      var ox = c[0] ? m : 0, oy = c[1] ? m : 0;
+      function P(x, y) { return (ox + sx * x) + " " + (oy + sy * y); }
+
+      if (s.corners === "bracket") {
+        g.appendChild(shape("path", {
+          d: "M" + P(m, 0) + " L" + P(0, 0) + " L" + P(0, m),
+          stroke: col, "stroke-width": t, "stroke-linecap": "square"
+        }));
+      } else if (s.corners === "dot") {
+        g.appendChild(shape("circle", { cx: ox + sx * m * 0.5, cy: oy + sy * m * 0.5, r: m * 0.14, fill: col }));
+      } else if (s.corners === "diamond") {
+        var cx = ox + sx * m * 0.5, cy = oy + sy * m * 0.5, d = m * 0.22;
+        g.appendChild(shape("path", {
+          d: "M" + cx + " " + (cy - d) + " L" + (cx + d) + " " + cy +
+             " L" + cx + " " + (cy + d) + " L" + (cx - d) + " " + cy + " Z",
+          fill: col
+        }));
+      } else if (s.corners === "rule") {
+        g.appendChild(shape("path", { d: "M" + P(m, 0) + " L" + P(0, 0), stroke: col, "stroke-width": t }));
+      }
+
+      var box = document.createElement("div");
+      box.className = "corner";
+      box.style.top = c[1] ? "auto" : inset + "mm";
+      box.style.bottom = c[1] ? inset + "mm" : "auto";
+      box.style.left = c[0] ? "auto" : inset + "mm";
+      box.style.right = c[0] ? inset + "mm" : "auto";
+      box.appendChild(g);
+      host.appendChild(box);
+    });
+  }
+
+  /* =====================================================================
      DRAW THE SIGN
      ===================================================================== */
+
+  // how many px the browser puts in a mm, so measured text can be
+  // converted back into the mm the graphics are drawn in
+  var MM = (function () {
+    var probe = document.createElement("div");
+    probe.style.cssText = "position:absolute;visibility:hidden;width:100mm";
+    document.body.appendChild(probe);
+    var v = probe.offsetWidth / 100;
+    document.body.removeChild(probe);
+    return v || 3.7795;
+  })();
 
   var sheetEl = document.getElementById("sheet");
   var frameEl = document.getElementById("frame");
@@ -488,6 +758,7 @@
 
     contentEl.innerHTML = "";
     var shown = state.lines.filter(function (l) { return l.on; });
+    var pending = [];
 
     shown.forEach(function (ln, i) {
       if (s.spread === "spread" && i > 0) contentEl.appendChild(gap());
@@ -495,6 +766,13 @@
       var wrap = document.createElement("div");
       wrap.style.textAlign = ln.align;
       wrap.style.marginTop = (i === 0 ? 0 : ln.space) + "mm";
+
+      var contentW = (SIZES[s.size] || SIZES.letter)[0] - s.padX * 2;
+      var dv = divider(ln, contentW);
+      if (dv) {
+        dv.style.marginBottom = (ln.size * 0.35) + "mm";
+        wrap.appendChild(dv);
+      }
 
       var el = document.createElement("div");
       el.className = "el";
@@ -528,11 +806,38 @@
         save();
       });
 
-      wrap.appendChild(el);
+      // the words and their graphic share a box so the graphic can be
+      // centred on the actual rendered text rather than the column
+      var box = document.createElement("div");
+      box.className = "linebox";
+      box.appendChild(el);
+      wrap.appendChild(box);
+
+      var lf = flankMark(ln, ln.size, 1);
+      var rf = flankMark(ln, ln.size, -1);
+      if (lf) {
+        lf.style.marginRight = (ln.size * 0.3) + "mm";
+        wrap.insertBefore(lf, box);
+      }
+      if (rf) {
+        rf.style.marginLeft = (ln.size * 0.3) + "mm";
+        wrap.appendChild(rf);
+      }
+
       contentEl.appendChild(wrap);
+
+      // measured after layout, so the graphic fits the words as set
+      pending.push(function () {
+        var g = behind(ln, el.offsetWidth / MM, el.offsetHeight / MM);
+        if (g) box.insertBefore(g, el);
+      });
     });
 
     if (s.spread === "spread" && shown.length) contentEl.appendChild(gap());
+
+    // graphics are sized from measured text, so they run after layout
+    pending.forEach(function (f) { f(); });
+    drawCorners();
     fit();
   }
 
@@ -596,7 +901,7 @@
     var loud = /\b(stick|stand)s? out|pop|louder|shout|attention|noticeab|stronger|bolder look|more impact|eye.?catch/.test(c);
     var hit = false;
 
-    if (/\b(bo[ao]?rder|outline|box|frame)\b/.test(c)) {
+    if (/\b(bo[ao]?rder|outline|box|frame)\b/.test(c) && !/\b(tag|ticket|ring|circle|oval)\b/.test(c)) {
       if (off.test(c)) { ln.bdOn = false; did.push("border off"); }
       else {
         ln.bdOn = true;
@@ -610,7 +915,56 @@
       hit = true;
     }
 
-    if (/\b(highlight|background|behind)\b/.test(c)) {
+    if (/\b(circle|ring|round it|around it|oval|disc|bubble)\b/.test(c)) {
+      if (off.test(c)) { ln.gfx = "none"; did.push("graphic off"); }
+      else {
+        var el0 = document.getElementById("el-" + ln.key);
+        var wide = el0 ? (el0.offsetWidth / Math.max(el0.offsetHeight, 1)) > 2 : true;
+        ln.gfx = /oval/.test(c) ? "oval"
+               : /disc|solid|filled/.test(c) ? "disc"
+               : (/\bcircle\b/.test(c) && !wide) ? "ring"
+               : wide ? "oval" : "ring";
+        if (col) ln.gfxColor = col.hex;
+        did.push(ln.gfx + " behind the words");
+      }
+      hit = true;
+    } else if (/\b(bracket|corner mark)\b/.test(c) && !/\b(sheet|page|paper)\b/.test(c)) {
+      ln.gfx = off.test(c) ? "none" : "brackets"; did.push(off.test(c) ? "graphic off" : "corner brackets");
+      if (col && !off.test(c)) ln.gfxColor = col.hex;
+      hit = true;
+    } else if (/\b(price tag|swing ticket|ticket)\b/.test(c)) {
+      ln.gfx = off.test(c) ? "none" : "tag"; did.push(off.test(c) ? "graphic off" : "price tag outline");
+      if (col && !off.test(c)) ln.gfxColor = col.hex;
+      hit = true;
+    } else if (/\b(graphic|shape|decoration)\b/.test(c) && off.test(c)) {
+      ln.gfx = "none"; did.push("graphic off"); hit = true;
+    }
+
+    if (/\b(rule above|line above|divider|separator)\b/.test(c)) {
+      if (off.test(c)) { ln.div = "none"; did.push("rule above off"); }
+      else {
+        ln.div = /diamond/.test(c) ? "diamond" : /dot/.test(c) ? "dot" :
+                 /double/.test(c) ? "double" : /dash/.test(c) ? "dashed" : "rule";
+        if (col) ln.divColor = col.hex;
+        if (/\b(thick|thicker|heavy)\b/.test(c)) ln.divW = Math.min(6, ln.divW + 0.5);
+        if (/\b(thin|thinner|fine)\b/.test(c)) ln.divW = Math.max(0.1, ln.divW - 0.3);
+        did.push("rule above (" + ln.div + ")");
+      }
+      hit = true;
+    }
+
+    if (/\b(either side|each side|both sides|flank|stars either)\b/.test(c)) {
+      if (off.test(c)) { ln.flank = "none"; did.push("side marks off"); }
+      else {
+        ln.flank = /chevron|arrow/.test(c) ? "chevron" : /slash/.test(c) ? "slash" :
+                   /rule|dash|line/.test(c) ? "rule" : "dot";
+        if (col) ln.flankColor = col.hex;
+        did.push("marks either side (" + ln.flank + ")");
+      }
+      hit = true;
+    }
+
+    if (/\b(highlight|background|behind)\b/.test(c) && !/graphic|circle|ring/.test(c)) {
       if (off.test(c)) { ln.hlOn = false; did.push("highlight off"); }
       else { ln.hlOn = true; if (col) ln.hl = col.hex; did.push("highlight on" + (col ? " in " + col.name : "")); }
       hit = true;
@@ -637,7 +991,7 @@
       ln.weight = "400"; did.push("lighter"); hit = true;
     }
 
-    if (col && !/bo[ao]?rder|highlight|background|behind|paper/.test(c)) {
+    if (col && !/bo[ao]?rder|highlight|background|behind|paper|circle|ring|oval|disc|rule above|line above|divider|either side|each side|tag/.test(c)) {
       ln.color = col.hex; did.push("colour " + col.name); hit = true;
     }
 
@@ -698,6 +1052,17 @@
         if (/\bsingle|one line\b/.test(c)) s.frameDouble = false;
         if (col) s.frameColor = col.hex;
         did.push("border on" + (col ? " in " + col.name : ""));
+      }
+      hit = true;
+    }
+
+    if (/\bcorner/.test(c)) {
+      if (off.test(c)) { s.corners = "none"; did.push("corner marks off"); }
+      else {
+        s.corners = /diamond/.test(c) ? "diamond" : /dot/.test(c) ? "dot" :
+                    /rule|line|dash/.test(c) ? "rule" : "bracket";
+        if (col) s.cornerColor = col.hex;
+        did.push("corner " + s.corners + "s");
       }
       hit = true;
     }
@@ -864,10 +1229,10 @@
       var g = section(ln.name, idx < 2);
 
       askBox(g, ln, [
-        "add a border and make it stick out more",
-        "bigger and bolder",
-        "dark red, Impact font",
-        "highlight it in yellow"
+        "put a ring around it and make it bigger",
+        "circle it in red",
+        "rule above with a diamond",
+        "chevrons either side"
       ]);
 
       g.appendChild(check("Show this line", ln.on, function (v) { ln.on = v; save(); rebuild(); }));
@@ -919,6 +1284,32 @@
       g.appendChild(row("Padding (mm)", input("number", ln.bdPad, "1", function (v) { ln.bdPad = parseFloat(v) || 0; save(); draw(); })));
       g.appendChild(row("Corner round", input("number", ln.bdRadius, "1", function (v) { ln.bdRadius = parseFloat(v) || 0; save(); draw(); })));
 
+      g.appendChild(subhead("Graphic behind the words"));
+      g.appendChild(row("Shape", select(
+        [["none", "None"], ["ring", "Circle ring"], ["oval", "Oval ring"],
+         ["disc", "Solid disc"], ["brackets", "Corner brackets"],
+         ["rules", "Rule above & below"], ["tag", "Price tag outline"]],
+        ln.gfx, function (v) { ln.gfx = v; save(); draw(); })));
+      g.appendChild(row("Colour", input("color", ln.gfxColor, null, function (v) { ln.gfxColor = v; save(); draw(); })));
+      g.appendChild(row("Size (%)", input("number", ln.gfxSize, "2", function (v) { ln.gfxSize = parseFloat(v) || 100; save(); draw(); })));
+      g.appendChild(row("Line width", input("number", ln.gfxW, "0.1", function (v) { ln.gfxW = parseFloat(v) || 0.4; save(); draw(); })));
+
+      g.appendChild(subhead("Rule above this line"));
+      g.appendChild(row("Style", select(
+        [["none", "None"], ["rule", "Plain rule"], ["dot", "Rule with dot"],
+         ["diamond", "Rule with diamond"], ["double", "Double rule"], ["dashed", "Dashed"]],
+        ln.div, function (v) { ln.div = v; save(); draw(); })));
+      g.appendChild(row("Colour", input("color", ln.divColor, null, function (v) { ln.divColor = v; save(); draw(); })));
+      g.appendChild(row("Thickness", input("number", ln.divW, "0.1", function (v) { ln.divW = parseFloat(v) || 0.3; save(); draw(); })));
+      g.appendChild(row("Width (%)", input("number", ln.divLen, "5", function (v) { ln.divLen = parseFloat(v) || 40; save(); draw(); })));
+
+      g.appendChild(subhead("Marks either side"));
+      g.appendChild(row("Style", select(
+        [["none", "None"], ["dot", "Dots"], ["rule", "Short rules"],
+         ["chevron", "Chevrons"], ["slash", "Slashes"]],
+        ln.flank, function (v) { ln.flank = v; save(); draw(); })));
+      g.appendChild(row("Colour", input("color", ln.flankColor, null, function (v) { ln.flankColor = v; save(); draw(); })));
+
       g.appendChild(subhead("Highlight behind"));
       g.appendChild(check("Show highlight", ln.hlOn, function (v) { ln.hlOn = v; save(); draw(); }));
       g.appendChild(row("Colour", input("color", ln.hl, null, function (v) { ln.hl = v; save(); draw(); })));
@@ -929,9 +1320,9 @@
     var g2 = section("Paper, border & layout", false);
 
     askBox(g2, null, [
+      "add corner brackets",
       "make it A4 with a thick red border",
       "cream paper",
-      "Georgia font",
       "wider margins"
     ]);
 
@@ -947,6 +1338,14 @@
       s.spread, function (v) { s.spread = v; save(); draw(); })));
     g2.appendChild(row("Margin side", input("number", s.padX, "1", function (v) { s.padX = parseFloat(v) || 0; save(); draw(); })));
     g2.appendChild(row("Margin top", input("number", s.padY, "1", function (v) { s.padY = parseFloat(v) || 0; save(); draw(); })));
+
+    g2.appendChild(subhead("Corner marks"));
+    g2.appendChild(row("Style", select(
+      [["none", "None"], ["bracket", "Brackets"], ["dot", "Dots"],
+       ["diamond", "Diamonds"], ["rule", "Short rules"]],
+      s.corners, function (v) { s.corners = v; save(); draw(); })));
+    g2.appendChild(row("Colour", input("color", s.cornerColor, null, function (v) { s.cornerColor = v; save(); draw(); })));
+    g2.appendChild(row("Size (mm)", input("number", s.cornerSize, "1", function (v) { s.cornerSize = parseFloat(v) || 6; save(); draw(); })));
 
     g2.appendChild(subhead("Border round the sheet"));
     g2.appendChild(check("Show border", s.frameOn, function (v) { s.frameOn = v; save(); draw(); }));
@@ -972,6 +1371,22 @@
     st.textContent = "@page { size: " + dims[0] + "mm " + dims[1] + "mm; margin: 0; }";
     document.head.appendChild(st);
     window.print();
+  });
+
+  document.getElementById("wording").addEventListener("click", function () {
+    if (!confirm("Replace the words with the plain set?\n\n" +
+        "BLOW OUT SALE / EVERYTHING ON THIS TABLE / $25 / EACH /\n" +
+        "ALL SALES FINAL \u00b7 WHILE THEY LAST\n\n" +
+        "Only the words change \u2014 your sizes, colours and graphics stay as they are.\n\n" +
+        "Check ALL SALES FINAL is actually your policy before printing.")) return;
+    state.lines.forEach(function (ln) {
+      if (WORDING[ln.key]) {
+        ln.text = WORDING[ln.key];
+        if (ln.key === "note") ln.on = true;
+      }
+    });
+    save();
+    rebuild();
   });
 
   document.getElementById("reset").addEventListener("click", function () {
