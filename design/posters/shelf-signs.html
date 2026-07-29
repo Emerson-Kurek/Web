@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SHELF-SIGNS — Flush mount clearance set (3 sheets)</title>
+<style>
+  /* ==========================================================
+     SHELF-SIGNS · three box-top signs, one family
+     Sheet: US Letter portrait, no bleed. A3 switchable.
+
+     01 ROOMS   — where the light goes
+     02 PRICE   — what it costs
+     03 BOOKEND — both, for the repeat box
+
+     Replaces the three photocopied sheets: same message,
+     built to be read across a shop floor instead of at
+     arm's length.
+     ========================================================== */
+
+  :root {
+    /* ---- SHEET ---- */
+    --trim-w: 215.9mm;   /* US Letter portrait */
+    --trim-h: 279.4mm;
+    --safety: 13mm;      /* flanks — home printers clip less here */
+    --safety-y: 15mm;    /* head and foot */
+    --k: 1;              /* artwork scale: 1 at Letter, 1.38 at A3 */
+    --fit: 1;
+
+    /* ---- PALETTE ----
+       White ground: heavy coverage streaks on a dry office
+       printer, and a dark sheet recedes under store fluorescents
+       instead of competing with them. Attention is bought with
+       one saturated mass, not colour everywhere. */
+    --paper: #ffffff;
+    --ink: #17181a;
+    --ink-dim: rgba(23, 24, 26, 0.55);
+    --rule: rgba(23, 24, 26, 0.16);
+    --accent: #f08018;      /* brand orange — fills only          */
+    --accent-deep: #d9660a; /* the shaded half of a two-tone fill  */
+    --accent-ink: #a8500a;  /* orange legible as type on white     */
+    --on-accent: #17181a;   /* ~7:1 on the orange; white is ~2.4:1 */
+
+    --display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  /* A3 for window bays and end-caps — same layout, scaled */
+  body.a3 {
+    --trim-w: 297mm;
+    --trim-h: 420mm;
+    --safety: 18mm;
+    --safety-y: 20mm;
+    --k: 1.376;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { background: #1a1b1e; }
+
+  body {
+    margin: 0;
+    font-family: var(--display);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- screen chrome (never prints) ---------- */
+
+  .chrome {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    background: #101113;
+    border-bottom: 1px solid #2a2c30;
+  }
+
+  .chrome-id {
+    margin-right: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #8a8781;
+  }
+
+  .chrome-id b { color: #f0a04a; font-weight: 400; }
+
+  .chrome button {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: #e6e3dd;
+    background: transparent;
+    border: 1px solid #2a2c30;
+    padding: 8px 13px;
+    cursor: pointer;
+  }
+
+  .chrome button:hover { border-color: #f0a04a; color: #f0a04a; }
+  .chrome button:focus-visible { outline: 2px solid #f0a04a; outline-offset: 2px; }
+  .chrome button[aria-pressed="true"] { border-color: #f0a04a; color: #f0a04a; background: rgba(240, 160, 74, 0.13); }
+
+  .viewport {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 34px;
+    padding: 28px 0 48px;
+    overflow: hidden;
+  }
+
+  .scaler { transform: scale(var(--fit)); transform-origin: top center; }
+
+  .caption {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #6f6c67;
+    margin-bottom: 8px;
+  }
+
+  /* ---------- the sheet ---------- */
+
+  .sheet {
+    position: relative;
+    width: var(--trim-w);
+    height: var(--trim-h);
+    overflow: hidden;
+    background: var(--paper);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------- shared parts ---------- */
+
+  /* the stopper: a solid full-bleed mass of brand orange.
+     Nothing else on a sheet this size has the weight to be
+     seen by someone who was not already looking at it. */
+  .band {
+    position: relative;
+    background: linear-gradient(160deg, var(--accent) 0%, var(--accent) 58%, var(--accent-deep) 100%);
+    color: var(--on-accent);
+    padding: calc(9mm * var(--k)) var(--safety);
+    flex: none;
+  }
+
+  .brandline {
+    font-size: calc(3.5mm * var(--k));
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+  }
+
+  .stopper {
+    margin-top: calc(4mm * var(--k));
+    margin-bottom: -0.12em;      /* caps only — trim the dead descender */
+    font-size: calc(31mm * var(--k));
+    line-height: 0.9;
+    font-weight: 800;
+    letter-spacing: -0.028em;
+    text-transform: uppercase;
+  }
+
+  /* a thin repeat of the accent, so the sheet is framed rather
+     than top-heavy — the eye returns to the offer at the foot */
+  .footbar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(6mm * var(--k));
+    background: var(--accent);
+    color: var(--on-accent);
+    padding: calc(6mm * var(--k)) var(--safety);
+    font-size: calc(6.2mm * var(--k));
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .footbar .rhs {
+    font-family: var(--mono);
+    font-size: calc(5mm * var(--k));
+    letter-spacing: 0.14em;
+    font-weight: 400;
+  }
+
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: calc(11mm * var(--k)) var(--safety) calc(9mm * var(--k));
+    min-height: 0;
+  }
+
+  .eyebrow {
+    font-size: calc(4.6mm * var(--k));
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+
+  .spacer { flex: 1; }
+
+  /* ---------- 01 · ROOMS ---------- */
+
+  /* one room per line, set as large as the sheet allows.
+     A vertical list of four is scannable at distance; the
+     original ran the same four words at body-copy size. */
+  .rooms {
+    display: flex;
+    flex-direction: column;
+    margin-top: calc(7mm * var(--k));
+  }
+
+  .rooms li {
+    display: flex;
+    align-items: flex-start;
+    gap: calc(5mm * var(--k));
+    padding: calc(5mm * var(--k)) 0;
+    border-top: calc(0.5mm * var(--k)) solid var(--rule);
+  }
+
+  .rooms li:last-child { border-bottom: calc(0.5mm * var(--k)) solid var(--rule); }
+
+  /* the numeral hangs off the cap line of the word beside it,
+     not its baseline — at this size difference a shared
+     baseline reads as a misalignment */
+  .rooms .n {
+    flex: none;
+    width: calc(11mm * var(--k));
+    padding-top: calc(1.4mm * var(--k));
+    font-family: var(--mono);
+    font-size: calc(5mm * var(--k));
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--accent-ink);
+  }
+
+  .rooms .w {
+    margin-bottom: -0.1em;
+    font-size: calc(21.5mm * var(--k));
+    line-height: 0.94;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+
+  .support {
+    margin-top: calc(8mm * var(--k));
+    font-size: calc(5.4mm * var(--k));
+    line-height: 1.4;
+    color: var(--ink-dim);
+    max-width: 46ch;
+  }
+
+  .support b { color: var(--ink); font-weight: 700; }
+
+  /* ---------- 02 · PRICE ---------- */
+
+  .product {
+    margin-top: calc(6mm * var(--k));
+    margin-bottom: -0.1em;
+    font-size: calc(30mm * var(--k));
+    line-height: 0.92;
+    font-weight: 800;
+    letter-spacing: -0.032em;
+    text-transform: uppercase;
+  }
+
+  .descriptor {
+    margin-top: calc(7mm * var(--k));
+    font-size: calc(5.4mm * var(--k));
+    line-height: 1.42;
+    color: var(--ink-dim);
+    max-width: 40ch;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(2.6mm * var(--k));
+    margin-top: calc(8mm * var(--k));
+    font-family: var(--mono);
+    font-size: calc(4mm * var(--k));
+    line-height: 1;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .chips span {
+    border: calc(0.4mm * var(--k)) solid var(--rule);
+    padding: calc(2.6mm * var(--k)) calc(3.4mm * var(--k));
+  }
+
+  /* the price is the whole lower half of the sheet, knocked out
+     of solid orange. Biggest mass, highest contrast, one job. */
+  .pricepanel {
+    flex: none;
+    background: linear-gradient(155deg, var(--accent) 0%, var(--accent) 55%, var(--accent-deep) 100%);
+    color: var(--on-accent);
+    padding: calc(10mm * var(--k)) var(--safety) calc(11mm * var(--k));
+  }
+
+  .pricepanel .kicker {
+    font-size: calc(5.4mm * var(--k));
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+  }
+
+  .figure {
+    display: flex;
+    align-items: baseline;
+    gap: calc(6mm * var(--k));
+    margin-top: calc(6mm * var(--k));
+  }
+
+  .figure .amount {
+    margin-bottom: -0.1em;
+    font-size: calc(58mm * var(--k));
+    line-height: 0.8;
+    font-weight: 800;
+    letter-spacing: -0.055em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .figure .cur {
+    font-size: 0.4em;
+    vertical-align: 0.66em;
+    letter-spacing: 0;
+    margin-right: 0.04em;
+  }
+
+  .figure .each {
+    font-size: calc(11mm * var(--k));
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .pricepanel .terms {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(6mm * var(--k));
+    margin-top: calc(8mm * var(--k));
+    padding-top: calc(5mm * var(--k));
+    border-top: calc(0.6mm * var(--k)) solid rgba(23, 24, 26, 0.3);
+    font-family: var(--mono);
+    font-size: calc(4.6mm * var(--k));
+    line-height: 1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- 03 · BOOKEND ---------- */
+
+  /* the original sheet had GREAT DEAL top and bottom. That
+     instinct was right — this keeps the frame and gives the
+     middle something worth framing. */
+  .rail {
+    flex: none;
+    background: var(--accent);
+    color: var(--on-accent);
+    padding: calc(5.5mm * var(--k)) var(--safety);
+    text-align: center;
+    font-size: calc(8.4mm * var(--k));
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .centre {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: calc(12mm * var(--k)) var(--safety);
+    min-height: 0;
+  }
+
+  .centre .lead {
+    font-size: calc(19mm * var(--k));
+    line-height: 0.95;
+    font-weight: 800;
+    letter-spacing: -0.028em;
+    text-transform: uppercase;
+  }
+
+  /* the price sits on its own plate of orange rather than loose
+     on the paper: a centred layout needs a mass at its middle or
+     the sheet reads as margin with some type in it */
+  .plate {
+    align-self: stretch;
+    background: linear-gradient(155deg, var(--accent) 0%, var(--accent) 55%, var(--accent-deep) 100%);
+    color: var(--on-accent);
+    padding: calc(8mm * var(--k)) calc(8mm * var(--k)) calc(9mm * var(--k));
+    margin: calc(8mm * var(--k)) 0 calc(6mm * var(--k));
+  }
+
+  .bigprice {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: calc(5mm * var(--k));
+  }
+
+  .bigprice .amount {
+    margin-bottom: -0.1em;
+    font-size: calc(52mm * var(--k));
+    line-height: 0.82;
+    font-weight: 800;
+    letter-spacing: -0.055em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bigprice .cur {
+    font-size: 0.4em;
+    vertical-align: 0.66em;
+    letter-spacing: 0;
+    margin-right: 0.04em;
+  }
+
+  .bigprice .each {
+    font-size: calc(10mm * var(--k));
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .scarcity {
+    margin-top: calc(6mm * var(--k));
+    padding-top: calc(5mm * var(--k));
+    border-top: calc(0.6mm * var(--k)) solid rgba(23, 24, 26, 0.3);
+    font-family: var(--mono);
+    font-size: calc(4.4mm * var(--k));
+    line-height: 1;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--on-accent);
+  }
+
+  .roomrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: calc(3mm * var(--k)) calc(3.4mm * var(--k));
+    margin-top: calc(9mm * var(--k));
+    padding-top: calc(8mm * var(--k));
+    border-top: calc(0.5mm * var(--k)) solid var(--rule);
+    font-size: calc(6.2mm * var(--k));
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .roomrow .dot { color: var(--accent); }
+
+  .roomrow .head {
+    width: 100%;
+    font-size: calc(4.4mm * var(--k));
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--accent-ink);
+    margin-bottom: calc(2mm * var(--k));
+  }
+
+  /* ---------- print ---------- */
+
+  @page { size: 215.9mm 279.4mm; margin: 0; }
+
+  @media print {
+    html, body { background: #fff; }
+    .chrome, .caption { display: none !important; }
+    .viewport { display: block; padding: 0; overflow: visible; }
+    /* fit() writes an inline pixel height for the screen preview;
+       that height is taller than the sheet and pages on its own */
+    .scaler { transform: none; display: block; height: auto !important; }
+
+    /* the sheet is exactly the page height, and sub-pixel rounding
+       on that is enough to spill a blank page after every sign.
+       In paged media vh resolves to the page box itself, so this
+       lands on it exactly. */
+    .sheet {
+      height: 100vh;
+      break-after: page;
+      break-inside: avoid;
+    }
+
+    .sheet:last-of-type { break-after: auto; }
+
+    /* the orange masses are the design — do not let a browser
+       drop them to save ink */
+    .band, .footbar, .pricepanel, .rail {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <span class="chrome-id">SHELF-SIGNS · Flush mounts · <b>$19.99 each</b></span>
+  <button type="button" id="btn-size" aria-pressed="false">Sheet: US Letter</button>
+  <button type="button" id="btn-print">Print / PDF</button>
+</div>
+
+<div class="viewport">
+
+  <div class="scaler">
+    <div class="caption">01 · Rooms</div>
+
+    <!-- ============ 01 · ROOMS ============ -->
+    <div class="sheet">
+      <div class="band">
+        <div class="brandline">Distinctive Lighting Concepts</div>
+        <div class="stopper">Great<br>Deal</div>
+      </div>
+
+      <div class="body">
+        <div class="eyebrow">Right light for</div>
+
+        <ul class="rooms">
+          <li><span class="n">01</span><span class="w">Basements</span></li>
+          <li><span class="n">02</span><span class="w">Mudrooms</span></li>
+          <li><span class="n">03</span><span class="w">Laundry</span></li>
+          <li><span class="n">04</span><span class="w">Closets</span></li>
+        </ul>
+
+        <div class="spacer"></div>
+
+        <p class="support">Low-profile LED flush mounts. Bright, even light in rooms with
+        <b>no ceiling height to spare</b> &mdash; no bulbs to change, no plenum space needed.</p>
+      </div>
+
+      <div class="footbar">
+        <span>Flush mounts &mdash; $19.99 each</span>
+        <span class="rhs">While stock lasts</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scaler">
+    <div class="caption">02 · Price</div>
+
+    <!-- ============ 02 · PRICE ============ -->
+    <div class="sheet">
+      <div class="body">
+        <div class="brandline" style="color: var(--accent-ink)">Distinctive Lighting Concepts</div>
+
+        <div class="product">Flush<br>Mounts</div>
+
+        <p class="descriptor">Slim LED ceiling fixtures that sit flat against the ceiling.
+        Even, low-glare light with nothing hanging down.</p>
+
+        <div class="chips">
+          <span>LED built in</span>
+          <span>No bulbs to buy</span>
+          <span>Damp rated</span>
+          <span>Easy retrofit</span>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="eyebrow">Basements &middot; Mudrooms &middot; Laundry &middot; Closets</div>
+      </div>
+
+      <div class="pricepanel">
+        <div class="kicker">Great deal</div>
+        <div class="figure">
+          <span class="amount"><span class="cur">$</span>19.99</span>
+          <span class="each">Each</span>
+        </div>
+        <div class="terms">
+          <span>While stock lasts</span>
+          <span>In store only</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scaler">
+    <div class="caption">03 · Bookend</div>
+
+    <!-- ============ 03 · BOOKEND ============ -->
+    <div class="sheet">
+      <div class="rail">Great Deal</div>
+
+      <div class="centre">
+        <div class="brandline" style="color: var(--accent-ink); margin-bottom: calc(7mm * var(--k))">Distinctive Lighting Concepts</div>
+
+        <div class="lead">Flush Mounts</div>
+
+        <div class="plate">
+          <div class="bigprice">
+            <span class="amount"><span class="cur">$</span>19.99</span>
+            <span class="each">Each</span>
+          </div>
+          <div class="scarcity">While stock lasts</div>
+        </div>
+
+        <div class="roomrow">
+          <span class="head">Right light for</span>
+          <span>Basements</span><span class="dot">&bull;</span>
+          <span>Mudrooms</span><span class="dot">&bull;</span>
+          <span>Laundry</span><span class="dot">&bull;</span>
+          <span>Closets</span>
+        </div>
+      </div>
+
+      <div class="rail">Great Deal</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function () {
+    var body = document.body;
+    var sheets = document.querySelectorAll('.sheet');
+    var scalers = document.querySelectorAll('.scaler');
+
+    function fit() {
+      var available = window.innerWidth - 64;
+      var natural = sheets[0].offsetWidth;
+      var scale = Math.min(1, available / natural);
+      document.documentElement.style.setProperty('--fit', scale);
+      scalers.forEach(function (s, i) {
+        s.style.height = (s.firstElementChild.offsetHeight + sheets[i].offsetHeight) * scale + 'px';
+      });
+    }
+
+    fit();
+    window.addEventListener('resize', fit);
+
+    // @page cannot read custom properties, so it is rewritten on switch
+    var pageStyle = document.createElement('style');
+    document.head.appendChild(pageStyle);
+
+    function applyPageSize() {
+      var a3 = body.classList.contains('a3');
+      pageStyle.textContent = '@page { margin: 0; size: ' +
+        (a3 ? '297mm 420mm' : '215.9mm 279.4mm') + '; }';
+    }
+    applyPageSize();
+
+    var sizeBtn = document.getElementById('btn-size');
+    sizeBtn.addEventListener('click', function () {
+      var a3 = body.classList.toggle('a3');
+      sizeBtn.setAttribute('aria-pressed', String(a3));
+      sizeBtn.textContent = a3 ? 'Sheet: A3' : 'Sheet: US Letter';
+      applyPageSize();
+      fit();
+    });
+
+    document.getElementById('btn-print').addEventListener('click', function () {
+      window.print();
+    });
+  })();
+</script>
+</body>
+</html>
