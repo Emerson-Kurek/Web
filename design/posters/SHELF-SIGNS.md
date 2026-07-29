@@ -63,9 +63,28 @@ because office printers clip the head and foot of a sheet more than the sides.
 
 ## Printing
 
-Open the file, pick the sheet size, hit **Print / PDF**. Background graphics must
-be on or the orange masses drop out and the design goes with them; the stylesheet
-asks for them with `print-color-adjust: exact`, but a driver set to
+Exported and ready to print, no browser involved:
+
+| File | Pages |
+|------|-------|
+| `design/signs/shelf-sign-01-rooms-letter.pdf` | 1 |
+| `design/signs/shelf-sign-02-price-letter.pdf` | 1 |
+| `design/signs/shelf-sign-03-bookend-letter.pdf` | 1 |
+| `design/signs/shelf-signs-set-letter.pdf` | 3 — all three, in order |
+
+Every page is `MediaBox [0 0 612 792]` — US Letter to the point, so they print at
+100% with *fit to page* off and nothing to scale or centre. Fonts are embedded
+and the orange is vector shading, not a flattened image, so the blocks stay
+clean at any size.
+
+The PDFs are set in Liberation Sans, which is metric-compatible with Arial —
+that is what the export box had. Opening the HTML on a Mac picks up Helvetica
+Neue instead, at the same metrics.
+
+To re-export after an edit, or to print from the browser: open
+`shelf-signs.html`, pick the sheet size, hit **Print / PDF**. Background graphics
+must be on or the orange masses drop out and the design goes with them; the
+stylesheet asks for them with `print-color-adjust: exact`, but a driver set to
 *ignore page colours* will still strip them.
 
 The sheets are exactly one page tall, which is close enough to the page box that
