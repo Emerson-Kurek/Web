@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LAMPSHADE CLEARANCE — three-tier price sign</title>
+<style>
+  /* ==========================================================
+     LAMPSHADE CLEARANCE · shelf sign
+     Sheet: US Letter portrait, no bleed. A3 switchable.
+
+     Same family as SHELF-SIGNS: white ground, near-black type,
+     one saturated mass, near-black knocked out of the orange.
+     A price ladder rather than a single offer, so the sheet is
+     built around three rows that have to be compared at a
+     glance and read from across the floor.
+     ========================================================== */
+
+  :root {
+    --trim-w: 215.9mm;
+    --trim-h: 279.4mm;
+    --safety: 13mm;
+    --safety-y: 15mm;
+    --k: 1;
+    --fit: 1;
+
+    --paper: #ffffff;
+    --ink: #17181a;
+    --ink-dim: rgba(23, 24, 26, 0.55);
+    --rule: rgba(23, 24, 26, 0.16);
+    --accent: #f08018;
+    --accent-deep: #d9660a;
+    --accent-ink: #a8500a;
+    --on-accent: #17181a;
+
+    --display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  body.a3 {
+    --trim-w: 297mm;
+    --trim-h: 420mm;
+    --safety: 18mm;
+    --safety-y: 20mm;
+    --k: 1.376;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { background: #1a1b1e; }
+
+  body {
+    margin: 0;
+    font-family: var(--display);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- screen chrome (never prints) ---------- */
+
+  .chrome {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    background: #101113;
+    border-bottom: 1px solid #2a2c30;
+  }
+
+  .chrome-id {
+    margin-right: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #8a8781;
+  }
+
+  .chrome-id b { color: #f0a04a; font-weight: 400; }
+
+  .chrome button {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: #e6e3dd;
+    background: transparent;
+    border: 1px solid #2a2c30;
+    padding: 8px 13px;
+    cursor: pointer;
+  }
+
+  .chrome button:hover { border-color: #f0a04a; color: #f0a04a; }
+  .chrome button:focus-visible { outline: 2px solid #f0a04a; outline-offset: 2px; }
+  .chrome button[aria-pressed="true"] { border-color: #f0a04a; color: #f0a04a; background: rgba(240, 160, 74, 0.13); }
+
+  .viewport {
+    display: flex;
+    justify-content: center;
+    padding: 28px 0 48px;
+    overflow: hidden;
+  }
+
+  .scaler { transform: scale(var(--fit)); transform-origin: top center; }
+
+  /* ---------- the sheet ---------- */
+
+  .sheet {
+    position: relative;
+    width: var(--trim-w);
+    height: var(--trim-h);
+    overflow: hidden;
+    background: var(--paper);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .band {
+    flex: none;
+    background: linear-gradient(160deg, var(--accent) 0%, var(--accent) 58%, var(--accent-deep) 100%);
+    color: var(--on-accent);
+    padding: calc(9mm * var(--k)) var(--safety);
+  }
+
+  .brandline {
+    font-size: calc(3.5mm * var(--k));
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+  }
+
+  .stopper {
+    margin-top: calc(4mm * var(--k));
+    margin-bottom: -0.12em;   /* caps only — trim the dead descender */
+    font-size: calc(26mm * var(--k));
+    line-height: 0.92;
+    font-weight: 800;
+    letter-spacing: -0.028em;
+    text-transform: uppercase;
+  }
+
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: calc(9mm * var(--k)) var(--safety) calc(8mm * var(--k));
+    min-height: 0;
+  }
+
+  .eyebrow {
+    flex: none;
+    font-size: calc(4.6mm * var(--k));
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+
+  /* ---------- the ladder ----------
+     Three rows compared at a glance: the size name anchors the
+     left, the price the right, and the prices share a right
+     edge so the three can be read as a column of numbers
+     without the eye hunting for them. */
+
+  .ladder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: calc(5mm * var(--k));
+  }
+
+  .tier {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(6mm * var(--k));
+    padding: calc(7mm * var(--k)) 0;
+    border-top: calc(0.5mm * var(--k)) solid var(--rule);
+  }
+
+  .tier:last-child { border-bottom: calc(0.5mm * var(--k)) solid var(--rule); }
+
+  .tier .lhs { min-width: 0; }
+
+  .tier .size {
+    margin-bottom: -0.08em;
+    font-size: calc(19mm * var(--k));
+    line-height: 0.96;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+
+  /* the size the shopper actually needs, in the units they
+     measure in — the six-digit code is the same thing, but
+     nobody reads it as a measurement */
+  .tier .dims {
+    margin-top: calc(3mm * var(--k));
+    font-size: calc(5.2mm * var(--k));
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+
+  .tier .code {
+    margin-top: calc(2.4mm * var(--k));
+    font-family: var(--mono);
+    font-size: calc(4mm * var(--k));
+    line-height: 1;
+    letter-spacing: 0.13em;
+    color: var(--ink-dim);
+  }
+
+  .tier .price {
+    flex: none;
+    margin-bottom: -0.08em;
+    font-size: calc(30mm * var(--k));
+    line-height: 0.86;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent-ink);
+  }
+
+  .tier .price .cur {
+    font-size: 0.46em;
+    vertical-align: 0.58em;
+    letter-spacing: 0;
+    margin-right: 0.03em;
+  }
+
+  /* No tier is singled out with a fill. A chip on one row makes
+     that row the loudest thing on the sheet, and the only row
+     it could sit on without arguing with the ladder is the
+     cheapest and smallest — which is not what to point at.
+     Three prices sharing a right edge read as a column, and the
+     comparison is the message. */
+
+  .legend {
+    flex: none;
+    margin-top: calc(7mm * var(--k));
+    font-size: calc(4.4mm * var(--k));
+    line-height: 1.4;
+    color: var(--ink-dim);
+  }
+
+  .footbar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(6mm * var(--k));
+    background: var(--accent);
+    color: var(--on-accent);
+    padding: calc(6mm * var(--k)) var(--safety);
+    font-size: calc(6.2mm * var(--k));
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .footbar .rhs {
+    font-family: var(--mono);
+    font-size: calc(5mm * var(--k));
+    letter-spacing: 0.14em;
+    font-weight: 400;
+  }
+
+  /* ---------- print ---------- */
+
+  @page { size: 215.9mm 279.4mm; margin: 0; }
+
+  @media print {
+    html, body { background: #fff; }
+    .chrome { display: none !important; }
+    .viewport { display: block; padding: 0; overflow: visible; }
+
+    /* fit() writes an inline pixel height for the screen preview */
+    .scaler { transform: none; display: block; height: auto !important; }
+
+    /* exactly one page tall is close enough to the page box that
+       rounding spills a blank second page; vh resolves to the
+       page box itself in paged media */
+    .sheet { height: 100vh; break-inside: avoid; }
+
+    .band, .footbar {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <span class="chrome-id">LAMPSHADE CLEARANCE · <b>$8 &ndash; $15</b></span>
+  <button type="button" id="btn-size" aria-pressed="false">Sheet: US Letter</button>
+  <button type="button" id="btn-print">Print / PDF</button>
+</div>
+
+<div class="viewport">
+  <div class="scaler">
+    <div class="sheet">
+
+      <div class="band">
+        <div class="brandline">Distinctive Lighting Concepts</div>
+        <div class="stopper">Lampshade<br>Clearance</div>
+      </div>
+
+      <div class="body">
+        <div class="eyebrow">Three sizes</div>
+
+        <div class="ladder">
+          <div class="tier">
+            <div class="lhs">
+              <div class="size">Large</div>
+              <div class="dims">12&Prime; top &middot; 14&Prime; bottom &middot; 10&Prime; high</div>
+              <div class="code">121410</div>
+            </div>
+            <div class="price"><span class="cur">$</span>15</div>
+          </div>
+
+          <div class="tier">
+            <div class="lhs">
+              <div class="size">Medium</div>
+              <div class="dims">10&Prime; top &middot; 12&Prime; bottom &middot; 11&Prime; high</div>
+              <div class="code">101211</div>
+            </div>
+            <div class="price"><span class="cur">$</span>12</div>
+          </div>
+
+          <div class="tier">
+            <div class="lhs">
+              <div class="size">Small</div>
+              <div class="dims">6&Prime; top &middot; 8&Prime; bottom &middot; 7&Prime; high</div>
+              <div class="code">060807</div>
+            </div>
+            <div class="price"><span class="cur">$</span>8</div>
+          </div>
+        </div>
+
+        <p class="legend">Measured top diameter &times; bottom diameter &times; height.
+        Ask us if you are unsure which size fits your lamp.</p>
+      </div>
+
+      <div class="footbar">
+        <span>All shades reduced</span>
+        <span class="rhs">While stock lasts</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var body = document.body;
+    var scaler = document.querySelector('.scaler');
+    var sheet = document.querySelector('.sheet');
+
+    function fit() {
+      var available = window.innerWidth - 64;
+      var scale = Math.min(1, available / sheet.offsetWidth);
+      document.documentElement.style.setProperty('--fit', scale);
+      scaler.style.height = (sheet.offsetHeight * scale) + 'px';
+    }
+
+    fit();
+    window.addEventListener('resize', fit);
+
+    // @page cannot read custom properties, so it is rewritten on switch
+    var pageStyle = document.createElement('style');
+    document.head.appendChild(pageStyle);
+
+    function applyPageSize() {
+      var a3 = body.classList.contains('a3');
+      pageStyle.textContent = '@page { margin: 0; size: ' +
+        (a3 ? '297mm 420mm' : '215.9mm 279.4mm') + '; }';
+    }
+    applyPageSize();
+
+    var sizeBtn = document.getElementById('btn-size');
+    sizeBtn.addEventListener('click', function () {
+      var a3 = body.classList.toggle('a3');
+      sizeBtn.setAttribute('aria-pressed', String(a3));
+      sizeBtn.textContent = a3 ? 'Sheet: A3' : 'Sheet: US Letter';
+      applyPageSize();
+      fit();
+    });
+
+    document.getElementById('btn-print').addEventListener('click', function () {
+      window.print();
+    });
+  })();
+</script>
+</body>
+</html>
