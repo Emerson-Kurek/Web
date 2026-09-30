@@ -1,0 +1,72 @@
+// Prisma schema — mirrors client/src/types/index.ts.
+// Run `npm run db:push` to create these tables in Postgres.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Direction {
+  long
+  short
+}
+
+enum TradeGrade {
+  A
+  B
+  C
+}
+
+model Setup {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  trades Trade[]
+}
+
+model MistakeTag {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  trades Trade[] @relation("TradeMistakes")
+}
+
+model Trade {
+  id       String    @id @default(cuid())
+  dateTime DateTime
+  ticker   String
+  direction Direction
+  entry    Float
+  exit     Float?
+  size     Float
+  stopLoss Float? // null = no defined risk (flagged in the UI)
+
+  pnl       Float? // realized P&L; null while open
+  rMultiple Float? // DERIVED; null when no stop or still open
+
+  setup   Setup?  @relation(fields: [setupId], references: [id])
+  setupId String?
+
+  mistakes MistakeTag[] @relation("TradeMistakes")
+
+  reasoning    String   @default("")
+  emotion      Int? // 1-5
+  grade        TradeGrade?
+  followedPlan Boolean  @default(false)
+
+  screenshotUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ReviewNote {
+  id              String   @id @default(cuid())
+  weekOf          DateTime
+  disciplineScore Float
+  insights        String[] // plain-English observations
+  oneFocus        String
+  createdAt       DateTime @default(now())
+}

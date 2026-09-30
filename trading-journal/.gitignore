@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+*.local
+*.tsbuildinfo
+
+# Prisma
+server/prisma/*.db
+
+# Uploads (screenshots) — kept out of git
+server/uploads/
+
+# Editor / OS
+.DS_Store
+.vscode/
